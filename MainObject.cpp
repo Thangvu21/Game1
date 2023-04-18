@@ -79,6 +79,16 @@ void MainObject ::set_clip_Jump_Fall()
     frame_clip_Fall[3].h = mHeight/2+8;
     frame_clip_Fall[3].w = mWidth / NUM_FRAMES_1;
 }
+void MainObject :: set_clip_4()
+{
+    for (int i = 0; i < 10; ++i)
+    {
+        frame_clip_4[i].x = i * mWidth / 10;
+        frame_clip_4[i].y = mHeight/2-8;
+        frame_clip_4[i].h = mHeight/2+8;
+        frame_clip_4[i].w = mWidth / 10;
+    }
+}
 void MainObject ::handleEvent(SDL_Event events)
 {
     if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
@@ -88,12 +98,16 @@ void MainObject ::handleEvent(SDL_Event events)
         case SDLK_d:
         {
             // đang bấm phím phải
-            if (status_ == WALK_LEFT)
+            if (status1_ == LEFT )
                 {
-                    degrees += 360 ;
-                    // flipType = SDL_FLIP_VERTICAL;
+                    flipType = SDL_FLIP_HORIZONTAL;
+                    status1_ = RIGHT ;
                 }
-            status_ = WALK_RIGHT;
+            else
+                {
+                    flipType = SDL_FLIP_NONE;
+                }
+            status_ = WALK;
         }
         break;
         default:
@@ -148,12 +162,16 @@ void MainObject ::handleEvent(SDL_Event events)
             case SDLK_a:
         {
             // đang bấm phím phải
-            if (status_ == WALK_RIGHT)
+            if (status1_ == RIGHT)
                 {
-                    degrees -= 360;
-                    // flipType = SDL_FLIP_VERTICAL;
+                    flipType = SDL_FLIP_HORIZONTAL;
+                    status1_ = LEFT;
                 }
-            status_ = WALK_LEFT;
+            else
+                {
+                    flipType = SDL_FLIP_NONE;
+                }
+            status_ = WALK;
         }
         break;
         default:
@@ -282,43 +300,80 @@ void MainObject ::handleEvent(SDL_Event events)
             break;
         }
     }
+    // ATTACK_4
+    if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
+    {
+        switch (events.key.keysym.sym)
+        {
+            case SDLK_n:
+            {
+                status_ = ATTACK3;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+    else if (events.type == SDL_KEYUP && events.key.repeat == 0)
+    {
+        switch (events.key.keysym.sym)
+        {
+            case SDLK_n: 
+        {
+            status_=STAND;
+        }
+        break;
+        default:
+            break;
+        }
+    }
 }
 
 void MainObject::handleMove()
 {
-    if (mRect.x>=SCREEN_WIDTH) 
+    if (mRect.x>=SCREEN_WIDTH && mRect.x < 0) 
         {
             mRect.x =0;
         }
-    if (mRect.y >= SCREEN_HEIGHT) 
+    if (mRect.y >= SCREEN_HEIGHT && mRect.y <0) 
         {
             mRect.y =0;
         }
+    if (status1_==RIGHT)
+    {
+        if (status_ == WALK)
+            {
+                mRect.x+=2;
+            }
+        if (status_ == RUN)
+            {
+                mRect.x+=4;
+            }
+    }
+    else if (status1_ == LEFT)
+    {
+        if (status_ == WALK)
+            {
+                mRect.x-=2;
+            }
+        if (status_ == RUN)
+            {
+                mRect.x-=4;
+            }
+    }
 
-    if (status_==WALK_RIGHT)
-    {
-        mRect.x+=4;
-    }
-    if (status_ == RUN)
-    {
-        mRect.x+=8;
-    }
-    if (status_ == WALK_LEFT)
-    {
-        mRect.x-=4;
-    }
     if (status_==STAND)
     {
         
     }
     if (status_==JUMP)
     {
-        mRect.y -= 4 ;
+        mRect.y -= 3 ;
         status_ == FALL;
     }
     if (status_==FALL)
     {
-        mRect.y += 4 ;
+        mRect.y += 3 ;
         status_ == STAND;
     }
 }
@@ -340,7 +395,7 @@ void MainObject ::Show(int x, int y)
                     frame = 0;
                 }   
         } 
-    else if (status_== WALK_LEFT || status_ == WALK_RIGHT) 
+    else if (status_== WALK) 
         {
             loadFromFile("Image/Walk.png");
             set_clip_1();
@@ -438,6 +493,21 @@ void MainObject ::Show(int x, int y)
                     frame = 0;
                 }   
         }
+    else if (status_ == ATTACK3 ) 
+        {
+            loadFromFile ("Image/Attack_4.png") ;
+            set_clip_4();
+            SDL_Rect *currentClip = &frame_clip_4[frame / 10];
+            render(x, y, currentClip , degrees , nullptr ,flipType);
+            // Go to next frame
+            ++frame;
+
+            // Cycle animation
+             if (frame / 10 >= 10)
+                {
+                    frame = 0;
+                }   
+        }
     // Render current frame
     // set_clip();
     
@@ -450,3 +520,30 @@ int MainObject ::GetHeight()
 {
     return mHeight;
 }
+void MainObject :: setCamera(SDL_Rect & camera)
+{
+    // Center MainObject over the camera
+    camera.x = (mRect.x + mRect.w /2 ) - SCREEN_WIDTH/2  ; 
+    camera.y = (mRect.y + mRect.h /2 ) - SCREEN_HEIGHT/2 ;
+    // keep camera in bounds
+    if (camera.x < 0)
+    {
+        camera.x =0;
+    }
+    if (camera.y < 0)
+    {
+        camera.y = 0;
+    }
+    if (camera.x > LEVEL_WIDTH - camera.w)
+    {
+        camera.x =LEVEL_WIDTH - camera.w;
+    }
+    if (camera.y > LEVEL_HEIGHT - camera.h)
+    {
+        camera.y = LEVEL_HEIGHT - camera.h;
+    }
+}
+void MainObject::render1(SDL_Rect & camera)
+    {
+        render(mRect.x - camera.x , mRect.y - camera.y,nullptr , 0 ,nullptr , flipType);
+    }

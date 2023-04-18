@@ -6,6 +6,8 @@ LTexture gBackgroundTexture;
 
 MainObject test;
 
+SDL_RendererFlip flipType1 = SDL_FLIP_NONE ; // flip cho background
+
 bool init()
 {
 	//Initialization flag
@@ -70,28 +72,18 @@ bool loadMedia()
 		printf( "Failed to load background texture image!\n" );
 		success = false;
 	}
-	// if( !test.loadFromFile( "Image/Jump.png" ) )
+	// if( !test.loadFromFile( "Image/Stand.png" ) )
 	// {
 	// 	printf( "Failed to load background texture image!\n" );
 	// 	success = false;
 	// }
 	// else
 	// {
-	// 	test.set_clip_Jump_Fall();
+	// 	test.set_clip();
 	// }
-
-	if( !test.loadFromFile( "Image/Stand.png" ) )
-	{
-		printf( "Failed to load background texture image!\n" );
-		success = false;
-	}
-	else
-	{
-		test.set_clip();
-	}
 	return success;
 }
-
+ 
 void close()
 {
 	//Free loaded images
@@ -125,7 +117,10 @@ int main( int argc, char* args[] )
 		}
 		else
 		{	
+
 			//Main loop flag
+			SDL_Rect camera = { 0 , 0 , SCREEN_WIDTH , SCREEN_HEIGHT };
+
 			bool quit = false;
 			while( !quit )
 			{
@@ -139,14 +134,20 @@ int main( int argc, char* args[] )
 					}
 					test.handleEvent(g_event);
 				}
+
+				test.handleMove();
+
+				test.setCamera(camera);
+
 				//Clear screen
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
 
 				//Render background texture to screen hiện thị ra
-				gBackgroundTexture.render(0,0,nullptr,0,nullptr,flipType);
+				gBackgroundTexture.render(0,0, &camera,0,nullptr,flipType1);
 				
-				test.handleMove();
+				// test.render1(camera);
+
 				test.Show(test.getRect().x, test.getRect().y );
 				
 				SDL_RenderPresent( gRenderer );
