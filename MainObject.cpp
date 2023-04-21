@@ -1,6 +1,6 @@
 #include "MainObject.h"
    
-#define GRAVITY_SPEED 4 // trọng lực rơi
+#define GRAVITY_SPEED 4 // trọng lực r ơi
 #define MAX_JUMP 4
 #define MAX_SPEED 10      // tốc độ tối đa
 #define PLAYER_SPEED 8    // tốc độ nhân vật
@@ -19,7 +19,7 @@ MainObject ::~MainObject()
 {
     free();
 }
-
+                                   
 void MainObject ::set_clip()
 {
     for (int i = 0; i < NUM_FRAMES; ++i)
@@ -100,10 +100,10 @@ void MainObject ::handleEvent(SDL_Event events)
             // đang bấm phím phải
             if (status1_ == LEFT )
                 {
-                    flipType = SDL_FLIP_HORIZONTAL;
+                    flipType = SDL_FLIP_NONE;
                     status1_ = RIGHT ;
                 }
-            else
+            else if (status1_ == RIGHT )
                 {
                     flipType = SDL_FLIP_NONE;
                 }
@@ -167,9 +167,9 @@ void MainObject ::handleEvent(SDL_Event events)
                     flipType = SDL_FLIP_HORIZONTAL;
                     status1_ = LEFT;
                 }
-            else
+            else if (status1_ == LEFT)
                 {
-                    flipType = SDL_FLIP_NONE;
+                    flipType = SDL_FLIP_HORIZONTAL;
                 }
             status_ = WALK;
         }
@@ -344,42 +344,99 @@ void MainObject::handleMove()
         if (status_ == WALK)
             {
                 mRect.x+=2;
+                if (  ( mRect.x + mRect.w > LEVEL_WIDTH ) ) 
+                    {
+                        mRect.x -=2 ;
+                        status1_==RIGHT;
+                    }
             }
         if (status_ == RUN)
             {
                 mRect.x+=4;
+                if ( ( mRect.x + mRect.w > LEVEL_WIDTH )  ) // || (touchesWall (mRect, tiles) )
+                    {
+                        mRect.x -= 4;
+                        status1_==RIGHT;
+                    }
             }
     }
     else if (status1_ == LEFT)
     {
         if (status_ == WALK)
             {
-                mRect.x-=2;
+                mRect.x -=2;
+                if ( mRect.x < 0 || ( mRect.x + mRect.w > LEVEL_WIDTH )  ) // || (touchesWall (mRect, tiles))
+                    {
+                        mRect.x +=2;
+                        status1_ = LEFT;
+                    }
             }
         if (status_ == RUN)
             {
-                mRect.x-=4;
+                mRect.x -=4;
+                if ( (mRect.x < 0 ) || ( mRect.x + mRect.w > LEVEL_WIDTH ) ) //|| (touchesWall (mRect, tiles))
+                    {
+                        mRect.x +=4;
+                        status1_ = LEFT;
+                    }
             }
     }
-
     if (status_==STAND)
     {
         
     }
-    if (status_==JUMP)
+    if (status1_ == RIGHT)
     {
-        mRect.y -= 3 ;
-        status_ == FALL;
+        if (status_==JUMP)
+        {
+            mRect.y -= 3 ;
+            mRect.x += 1 ;
+            if ( (mRect.y < 0 )|| ( mRect.y + mRect.h > LEVEL_HEIGHT ) )  //  || (touchesWall (mRect, tiles))
+                        {
+                            mRect.y +=3;
+                        }
+            status_ == FALL;
+        }
+        if (status_==FALL)
+        {
+            mRect.y += 3 ;
+            mRect.x += 1 ;
+            if (  ( mRect.y + mRect.h > LEVEL_HEIGHT )  )  //|| (touchesWall (mRect, tiles))
+                {
+                    mRect.y -=3;
+                }
+            status_ == STAND;
+        }
     }
-    if (status_==FALL)
+    else if (status1_ == LEFT)
     {
-        mRect.y += 3 ;
-        status_ == STAND;
+        if (status_==JUMP)
+        {
+            mRect.y -= 3 ;
+            mRect.x -= 1 ;
+            if ( (mRect.y < 0 )|| ( mRect.y + mRect.h > LEVEL_HEIGHT ) )  //  || (touchesWall (mRect, tiles))
+                        {
+                            mRect.y +=3;
+                        }
+            status_ == FALL;
+        }
+        if (status_==FALL)
+        {
+            mRect.y += 3 ;
+            mRect.x -= 1 ;
+            if (  ( mRect.y + mRect.h > LEVEL_HEIGHT )  )  //|| (touchesWall (mRect, tiles))
+                {
+                    mRect.y -=3;
+                }
+            status_ == STAND;
+        }
     }
 }
 
-void MainObject ::Show(int x, int y)
+void MainObject ::Show(int x, int y , SDL_Rect & camera)  
 {
+    x = mRect.x - camera.x;
+    y = mRect.y - camera.y;
     if (status_==STAND)
         {
             loadFromFile("Image/Stand.png");
@@ -521,7 +578,7 @@ int MainObject ::GetHeight()
     return mHeight;
 }
 void MainObject :: setCamera(SDL_Rect & camera)
-{
+{ 
     // Center MainObject over the camera
     camera.x = (mRect.x + mRect.w /2 ) - SCREEN_WIDTH/2  ; 
     camera.y = (mRect.y + mRect.h /2 ) - SCREEN_HEIGHT/2 ;
@@ -543,7 +600,4 @@ void MainObject :: setCamera(SDL_Rect & camera)
         camera.y = LEVEL_HEIGHT - camera.h;
     }
 }
-void MainObject::render1(SDL_Rect & camera)
-    {
-        render(mRect.x - camera.x , mRect.y - camera.y,nullptr , 0 ,nullptr , flipType);
-    }
+//  

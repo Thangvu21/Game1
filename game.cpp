@@ -2,12 +2,11 @@
 #include "commonFunction.h"
 #include "BaseObject.h"
 #include "MainObject.h"
+#include <fstream>
 LTexture gBackgroundTexture;
-
-MainObject test;
-
-SDL_RendererFlip flipType1 = SDL_FLIP_NONE ; // flip cho background
-
+       
+MainObject test;      
+                 
 bool init()
 {
 	//Initialization flag
@@ -62,7 +61,7 @@ bool init()
 	return success;
 }
 
-bool loadMedia()
+bool loadMedia()  //Tile* tiles[]
 {
 	//Loading success flag
 	bool success = true;
@@ -72,22 +71,21 @@ bool loadMedia()
 		printf( "Failed to load background texture image!\n" );
 		success = false;
 	}
-	// if( !test.loadFromFile( "Image/Stand.png" ) )
-	// {
-	// 	printf( "Failed to load background texture image!\n" );
-	// 	success = false;
-	// }
-	// else
-	// {
-	// 	test.set_clip();
-	// }
 	return success;
 }
  
 void close()
 {
+
+	// for( int i = 0; i < TOTAL_TILES; ++i )
+	// {
+	// 	 if( tiles[ i ] != NULL )
+	// 	 {
+	// 		delete tiles[ i ];
+	// 		tiles[ i ] = NULL;
+	// 	 }
+	// }
 	//Free loaded images
-	// WalkTexture.free();
 	gBackgroundTexture.free();
 	test.free();
 	//Destroy window	
@@ -110,6 +108,7 @@ int main( int argc, char* args[] )
 	}
 	else
 	{
+		// Tile* tileSet[ TOTAL_TILES ];
 		//Load media
 		if( !loadMedia() )
 		{
@@ -143,20 +142,18 @@ int main( int argc, char* args[] )
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
 
-				//Render background texture to screen hiện thị ra
-				gBackgroundTexture.render(0,0, &camera,0,nullptr,flipType1);
+				// Render background texture to screen hiện thị ra
+				gBackgroundTexture.render(0,0, &camera,0,nullptr,SDL_FLIP_NONE);
 				
-				// test.render1(camera);
-
-				test.Show(test.getRect().x, test.getRect().y );
+				test.Show(test.getRect().x, test.getRect().y ,camera);
 				
 				SDL_RenderPresent( gRenderer );
 			}
 		}
+		close();
 	}
 
 	//Free resources and close SDL
-	close();
-
+	
 	return 0;
 }
