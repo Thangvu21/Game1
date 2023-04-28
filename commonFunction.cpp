@@ -10,7 +10,7 @@ SDL_RendererFlip flipType = SDL_FLIP_NONE ;
 
 // SDL_Rect gTileClips[ TOTAL_TILE_SPRITES ];
 
-bool CheckCollision (SDL_Rect a , SDL_Rect b)
+bool checkCollision (SDL_Rect a , SDL_Rect b)
 {
 	int left_a, left_b ;
 	int right_a,right_b;
@@ -47,5 +47,5 @@ bool CheckCollision (SDL_Rect a , SDL_Rect b)
 		}
 	return true;
   } 
-                              
+                            
 

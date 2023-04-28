@@ -2,11 +2,11 @@
 #include "commonFunction.h"
 #include "BaseObject.h"
 #include "MainObject.h"
-#include <fstream>
-LTexture gBackgroundTexture;
+#include "Gamemap.h"
+LTexture gBackgroundTexture; 
        
-MainObject test;      
-                 
+MainObject test;      // nhân vật chính
+
 bool init()
 {
 	//Initialization flag
@@ -61,7 +61,7 @@ bool init()
 	return success;
 }
 
-bool loadMedia()  //Tile* tiles[]
+bool loadMedia()  
 {
 	//Loading success flag
 	bool success = true;
@@ -71,12 +71,12 @@ bool loadMedia()  //Tile* tiles[]
 		printf( "Failed to load background texture image!\n" );
 		success = false;
 	}
+	
 	return success;
 }
  
-void close()
+void close()  //Tile* tiles[]
 {
-
 	// for( int i = 0; i < TOTAL_TILES; ++i )
 	// {
 	// 	 if( tiles[ i ] != NULL )
@@ -86,7 +86,7 @@ void close()
 	// 	 }
 	// }
 	//Free loaded images
-	gBackgroundTexture.free();
+	// gBackgroundTexture.free();
 	test.free();
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
@@ -98,7 +98,7 @@ void close()
 	IMG_Quit();
 	SDL_Quit();
 }
-
+    
 int main( int argc, char* args[] )
 {
 	
@@ -108,17 +108,18 @@ int main( int argc, char* args[] )
 	}
 	else
 	{
-		// Tile* tileSet[ TOTAL_TILES ];
+
 		//Load media
-		if( !loadMedia() )
+		if( !loadMedia() ) //tileSet
 		{
 			printf( "Failed to load media!\n" );
 		}
 		else
 		{	
-
+			GameMap game_Map;
+			game_Map.LoadText("map/map01.dat");
+			game_Map.LoadTiles();
 			//Main loop flag
-			SDL_Rect camera = { 0 , 0 , SCREEN_WIDTH , SCREEN_HEIGHT };
 
 			bool quit = false;
 			while( !quit )
@@ -134,23 +135,30 @@ int main( int argc, char* args[] )
 					test.handleEvent(g_event);
 				}
 
-				test.handleMove();
-
-				test.setCamera(camera);
-
 				//Clear screen
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
 
+
 				// Render background texture to screen hiện thị ra
-				gBackgroundTexture.render(0,0, &camera,0,nullptr,SDL_FLIP_NONE);
+				// gBackgroundTexture.render(0,0, &camera,0,nullptr,SDL_FLIP_NONE);
 				
-				test.Show(test.getRect().x, test.getRect().y ,camera);
-				
+				Map map_data = game_Map.GetMap(); // laays du lieu map trong game map
+				test.SetMap_X_Y(map_data.start_x,map_data.start_y);
+
+				test.handleMove(map_data);
+
+				test.Show(test.getRect().x, test.getRect().y );
+
+				// test.handleBullet();
+				game_Map.SetMap(map_data);
+				game_Map.DrawMap();
+
+
 				SDL_RenderPresent( gRenderer );
 			}
 		}
-		close();
+		close();//tileSet
 	}
 
 	//Free resources and close SDL
