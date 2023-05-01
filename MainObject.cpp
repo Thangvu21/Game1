@@ -3,7 +3,7 @@
 #include <vector>
 
 #define GRAVITY_SPEED 1 // trọng lực r ơi
-#define MAX_FALL_SPEED 10 // max speed 
+#define MAX_FALL_SPEED 4 // max speed 
 #define MAX_JUMP 4
 #define MAX_SPEED 10      // tốc độ tối đa
 #define PLAYER_SPEED 8    // tốc độ nhân vật
@@ -21,6 +21,7 @@ MainObject ::MainObject()
     mRect.y = 100;
     status_ = FALL;
     on_ground = false;
+    move = true;
 }
 MainObject ::~MainObject()
 {
@@ -131,7 +132,7 @@ void MainObject:: handleBullet()
                 }
         }
 }
-
+    
 void MainObject ::handleEvent(SDL_Event events)
 {
     if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
@@ -150,8 +151,10 @@ void MainObject ::handleEvent(SDL_Event events)
                 {
                     flipType = SDL_FLIP_NONE;
                 }
-            status_ = WALK;
+            input_type.D_input = 1;
+            move = true;
         }
+         
         break;
         default:
             break;
@@ -161,23 +164,24 @@ void MainObject ::handleEvent(SDL_Event events)
     {
         switch (events.key.keysym.sym)
         {
-        case SDLK_d:
-        {
-            status_=STAND;
-        }
+            case SDLK_d:
+            {
+                input_type.D_input = 0;
+            }
         break;
         default:
             break;
         }
     }
-    // run
+    //s
     if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
     {
         switch (events.key.keysym.sym)
         {
             case SDLK_s:
             {
-                status_ = RUN;
+                input_type.S_input = 1;
+                move = true;
             }
             break;
         default:
@@ -188,35 +192,36 @@ void MainObject ::handleEvent(SDL_Event events)
     {
         switch (events.key.keysym.sym)
         {
-            case SDLK_s: // RUN  
-        {
-            status_=STAND;
-        }
-        break;
+            case SDLK_s:
+            {
+                input_type.S_input = 0;
+            }
+            break;
         default:
             break;
         }
     }
-    // walk  right
+    // a
     if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
     {
         switch (events.key.keysym.sym)
         {
             case SDLK_a:
-        {
-            // đang bấm phím phải
-            if (status1_ == RIGHT)
                 {
-                    flipType = SDL_FLIP_HORIZONTAL;
-                    status1_ = LEFT;
-                }
-            else if (status1_ == LEFT)
-                {
-                    flipType = SDL_FLIP_HORIZONTAL;
-                }
-            status_ = WALK;
-        }
-        break;
+                            // đang bấm phím phải
+                            if (status1_ == RIGHT)
+                                {
+                                    flipType = SDL_FLIP_HORIZONTAL;
+                                    status1_ = LEFT;
+                                }
+                            else if (status1_ == LEFT)
+                                {
+                                    flipType = SDL_FLIP_HORIZONTAL;
+                                }
+                            input_type.A_input = 1;
+                            move = true;
+                }        
+            break;
         default:
             break;
         }
@@ -225,15 +230,134 @@ void MainObject ::handleEvent(SDL_Event events)
     {
         switch (events.key.keysym.sym)
         {
-            case SDLK_a: 
-        {
-            status_=STAND;
-        }
-        break;
+            case SDLK_a:
+            {
+                input_type.A_input = 0;
+            }   
+            break;
         default:
             break;
         }
     }
+    //w
+    if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
+    {
+        switch (events.key.keysym.sym)
+        {
+            case SDLK_w:
+            {
+                input_type.W_input = 1;
+                move = true;
+            }      
+            break;
+        default:
+            break;
+        }
+    }
+    else if (events.type == SDL_KEYUP && events.key.repeat == 0)
+    {
+        switch (events.key.keysym.sym)
+        {
+            case SDLK_w:
+            {
+                input_type.W_input = 0;
+            }    
+            break;
+        default:
+            break;
+        }
+    }
+    // run
+    // if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
+    // {
+    //     switch (events.key.keysym.sym)
+    //     {
+    //         case SDLK_s:{
+    //         if (on_ground )
+    //             {
+    //                 status_ = RUN;
+    //             }
+    //         else 
+    //             {
+    //                 status_ = FALL;
+    //             }
+    //         }
+    //         break;
+    //     default:
+    //         break;
+    //     }
+    // }
+    // else if (events.type == SDL_KEYUP && events.key.repeat == 0)
+    // {
+    //     switch (events.key.keysym.sym)
+    //     {
+    //         case SDLK_s: // RUN  
+    //             {
+    //                 if (on_ground == true)
+    //                     {
+    //                         status_=STAND;
+    //                     }
+    //                 else
+    //                     {
+    //                         status_ = FALL;
+    //                     }
+    //             }
+    //     break;
+    //     default:
+    //         break;
+    //     }
+    // }
+
+    // walk  right
+    // if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
+    // {
+    //     switch (events.key.keysym.sym)
+    //     {
+    //         case SDLK_a:
+    //             {
+    //                 // đang bấm phím phải
+    //                 if (status1_ == RIGHT)
+    //                     {
+    //                         flipType = SDL_FLIP_HORIZONTAL;
+    //                         status1_ = LEFT;
+    //                     }
+    //                 else if (status1_ == LEFT)
+    //                     {
+    //                         flipType = SDL_FLIP_HORIZONTAL;
+    //                     }
+    //                 if (on_ground == false)
+    //                     {
+    //                         status_ = JUMP;
+    //                     }
+    //                 else 
+    //                     {
+    //                         on_ground = WALK;
+    //                     }
+    //             }
+    //     break;
+    //     default:
+    //         break;
+    //     }
+    // }
+    // else if (events.type == SDL_KEYUP && events.key.repeat == 0)
+    // {
+    //     switch (events.key.keysym.sym)
+    //     {
+    //         case SDLK_a: 
+    //             {
+    //                 if (on_ground)   
+    //                     {
+    //                         status_=STAND;
+    //                     }
+    //                 else
+    //                     status_ = FALL;
+    //             }
+    //     break;
+    //     default:
+    //         break;
+    //     }
+    // }
+
     // ATTACK - 0
     if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
     {
@@ -261,34 +385,35 @@ void MainObject ::handleEvent(SDL_Event events)
             break;
         }
     }
+    
     // JUMP
-    if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
-    {
-        switch (events.key.keysym.sym)
-        {
-        case SDLK_w:
-        {
-            // đang bấm phím phải
-            status_ = JUMP;
-        }
-        break;
-        default:
-            break;
-        }
-    }
-    else if (events.type == SDL_KEYUP && events.key.repeat == 0)
-    {
-        switch (events.key.keysym.sym)
-        {
-        case SDLK_w:
-        {
-            status_=FALL;
-        }
-        break;
-        default:
-            break;
-        }
-    }
+    // if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
+    // {
+    //     switch (events.key.keysym.sym)
+    //     {
+    //     case SDLK_w:
+    //     {
+    //         // đang bấm phím phải
+    //         status_ = JUMP;
+    //     }
+    //     break;
+    //     default:
+    //         break;
+    //     }
+    // }
+    // else if (events.type == SDL_KEYUP && events.key.repeat == 0)
+    // {
+    //     switch (events.key.keysym.sym)
+    //     {
+    //     case SDLK_w:
+    //     {
+    //         status_=FALL;
+    //     }
+    //     break;
+    //     default:
+    //         break;
+    //     }
+    // }
     // ATTACK_1
     if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
     {
@@ -375,54 +500,136 @@ void MainObject ::handleEvent(SDL_Event events)
 void MainObject::handleMove(Map & map_data_)
 {           
     x_val_ = 0;
-    y_val_+= GRAVITY_SPEED;
-    if ( y_val_  >= MAX_FALL_SPEED )
-        {
-            y_val_ = MAX_FALL_SPEED;
-        }
+    // y_val_  = GRAVITY_SPEED;
+
+        
     if (status1_==RIGHT)
     {
-        if (status_ == WALK)
+        // if (status_ == WALK )  bản cũ
+        //     {
+        //         x_val_ = 2;
+        //     }
+        // if (status_ == RUN )
+        //     {
+        //         x_val_ = 4;
+        //     }
+        // if (status_ == JUMP && on_ground == true)
+        //     {
+        //         y_val_ = -3;
+        //     }
+        // if ( status_ == FALL )
+        //     {
+        //         y_val_ = 3;
+        //     }
+        if (on_ground ==  true &&  input_type.D_input == 1)
             {
+                status_ = WALK;
                 x_val_ = 2;
             }
-        if (status_ == RUN)
+        else if (on_ground ==  true  && input_type.S_input == 1)
             {
+                status_ = RUN;
                 x_val_ = 4;
             }
-        if (status_ == JUMP && on_ground == true)
+        else if (on_ground == true && move == false) //đang đứng yên
             {
-                y_val_ = -3;
+                status_ = STAND;
             }
-        if ( status_ == FALL)
+        else if (on_ground == false && move == true && input_type.W_input == 0  ) // đang rơi
             {
-                y_val_ = 3;
+                status_ = FALL;
+                y_val_  = 4; 
+            }
+            
+        // else if (on_ground == false &&  input_type.W_input == 1) // nhảy lên bị chạm chướng ngại vật
+        //     {
+        //         // có thể rơi hoặc đứng yên nếu giữ  phím w
+        //         status_ = JUMP;
+              //     }
+        else if (input_type.W_input== 1 )
+            {  
+                if (input_type.D_input == 1 )
+                        {                    
+                            x_val_ = 2;
+                        }
+                y_val_ = -3;
+                status_ = JUMP;
+                on_ground = false;
             }
     }
     else if (status1_ == LEFT)
     {
-        if (status_ == WALK)
+        // if (status_ == WALK )
+        //     {
+        //         // if (on_ground == false)
+        //         //     {
+        //         //         status_ = FALL ;
+        //         //     }
+        //         // else
+        //         //     {
+        //             x_val_ = -2;
+        //     }
+        // if (status_ == RUN )
+        //     {
+        //         // if (on_ground == false)
+        //         //     {
+        //         //         status_ = FALL ;
+        //         //     }
+        //         // else
+        //         //     {
+        //                 x_val_ = -4;
+        //     }
+        // if (status_ == JUMP && on_ground == true)
+        //     {
+        //         y_val_ = -3;
+        //     }
+        // if (status_ == FALL)
+        //     {
+        //         y_val_ = 3;
+        //     }
+        if (on_ground ==  true && input_type.A_input == 1)
             {
-                x_val_ = -2 ;
+                status_ = WALK;
+                x_val_ = -2;
             }
-        if (status_ == RUN)
+        else if (on_ground ==  true && input_type.S_input == 1)
             {
-                x_val_ = -4;
+                status_ = RUN;
+                 x_val_ = -4;
             }
-        if (status_ == JUMP && on_ground == true)
+        else if (on_ground == true && move == false) //đang đứng yên
             {
-                y_val_ = -3;
-            }
-        if (status_ == FALL)
+                status_ = STAND;
+            }            
+        else if (on_ground == false  && move== true && input_type.W_input == 0 ) // đang rơi
             {
-                y_val_ = 3;
+                status_ = FALL;
+                y_val_  = 4; 
             }
+        else if (input_type.W_input== 1 )
+            {  
+                if (input_type.A_input == 1 )
+                        {                    
+                            x_val_ = -2;
+                        }
+                    y_val_ = -3;
+                    status_ = JUMP;
+                    on_ground = false;
+            }
+        
     }
-    // Bullet
-    // if (status_ == ATTACK1 || status_ == ATTACK2)
-    //     {
-    //         set_Bullet();
-    //     }
+    if (input_type.W_input == 0 && input_type.A_input== 0 && input_type.D_input == 0 && input_type.S_input == 0)
+            {
+                move=false;
+            }
+    if ( status_ == RUN || status_ == WALK || status_ == STAND)
+            {
+                if (on_ground == false)
+                    {
+                        status_ = FALL;
+                        y_val_ = 4;
+                    }
+            } 
     checkMap(map_data_);
     SetCamera_Entity_Map(map_data_);
 }
@@ -632,6 +839,8 @@ void MainObject::checkMap(Map & map_data_)
 {
     int x1 = 0; // điểm đầu
     int x2 = 0; // điểm kết thúc của check
+    int x3 = 0;
+    int x4 = 0;
 
     int y1 = 0;
     int y2 = 0;
@@ -639,7 +848,7 @@ void MainObject::checkMap(Map & map_data_)
     // check theo x 
     int height_min = TILE_SIZE;
     x1 = (mRect.x + x_val_ )/TILE_SIZE ; // vị trí tại ô bao nhiêu theo chiều x
-    x2 = (mRect.x  + mRect.w  -1 + x_val_)/TILE_SIZE ; 
+    x2 = (mRect.x  + mRect.w   + x_val_ -1 )/TILE_SIZE ; 
 
     y1 = ( mRect.y  ) / TILE_SIZE; // theo chiều y
     y2 = ( mRect.y+ TILE_SIZE -1 )/ TILE_SIZE ; // -1 sai số
@@ -654,57 +863,80 @@ void MainObject::checkMap(Map & map_data_)
     {
         if (x_val_ > 0)
             {
+                if (y_val_ == 0)
+                    {
+                        if (map_data_.tile[y2+1][x1] == BLANK_TILE && map_data_.tile[y2+1][x2] == BLANK_TILE  )
+                            {
+                                on_ground = false;
+                            }
+                    }
                 if (map_data_.tile[y1][x2] != BLANK_TILE || map_data_.tile[y2][x2] != BLANK_TILE  ) // oo ko duowc load hinh anh
                     {
                         mRect.x = x2 * TILE_SIZE  ; // neeu va cham tru di 1luong la chieu nganh cua nhan vat
-                        mRect.x -=  mRect.w + 1 ;
+                        mRect.x -=  mRect.w +1 ;
                         x_val_ = 0;
                     }
             }
+           
         if (x_val_ < 0)
             {
+                if (y_val_ == 0)
+                    {
+                        if (map_data_.tile[y2+1][x1] == BLANK_TILE && map_data_.tile[y2+1][x2] == BLANK_TILE  )
+                            {
+                                on_ground = false;
+                            }
+                    }
                 if (map_data_.tile[y1][x1] != BLANK_TILE || map_data_.tile[y2][x1] != BLANK_TILE  )
                     {
                         mRect.x = (x1+1)*TILE_SIZE;
                         x_val_ = 0;
                     }
+                
             }
     }
+
+    mRect.x += x_val_;
+
     // check theo chieu y /check o chu ko phai check theo chinh xac tung vi tri
     int width_min = TILE_SIZE ; 
-    x1 = mRect.x / TILE_SIZE;  // 
+    x1 = ( mRect.x ) / TILE_SIZE;  
 
-    x2 = (mRect.x+TILE_SIZE) / TILE_SIZE;
+    x2 = (mRect.x + mRect.w ) / TILE_SIZE;
+
+    // x3 = (mRect.x+mRect.w + x_val_)/TILE_SIZE;
+
+    // x4 = (mRect.x+mRect.w - x_val_)/TILE_SIZE;
 
     y1 = (mRect.y +y_val_) / TILE_SIZE;
-    
+
     y2 = (mRect.y + y_val_ + mRect.h -1)/TILE_SIZE;
 
     if ( x1 >= 0 && x2 < MAX_MAP_X  && y1 >=0  && y2 <MAX_MAP_Y)
     {
         if (y_val_ > 0 ) // ddang roi
-            {
-                if (map_data_.tile[y2][x1] != BLANK_TILE || map_data_.tile[y2][x2] != BLANK_TILE )
-                    {
-                        mRect.y = y2*TILE_SIZE ;
-                        mRect.y -= (mRect.h + 1);
-                        y_val_ = 0;
-                        status_= STAND ;
-                        on_ground = true;
-                    }
-            }
-        else if ( y_val_ < 0 )  // danh nhay
-            {
-                if (map_data_.tile[y1][x1] != BLANK_TILE || map_data_.tile[y1][x2] != BLANK_TILE )
-                    {
-                        mRect.y = (y1+1)*TILE_SIZE ; 
-                        y_val_ = 0;
-                        status_=STAND;
-                    }
-            }
+                {
+                    if (map_data_.tile[y2][x1] != BLANK_TILE || map_data_.tile[y2][x2] != BLANK_TILE) // 
+                        {
+                            mRect.y = y2*TILE_SIZE ;
+                            mRect.y -= (mRect.h +1 );
+                            y_val_ = 0;
+                            on_ground = true;
+                        }
+                }
+            
+            else if ( y_val_ < 0 )  // danh nhay
+                {
+                    if (map_data_.tile[y1][x1] != BLANK_TILE || map_data_.tile[y1][x2] != BLANK_TILE )
+                        {
+                            mRect.y = (y1+1)*TILE_SIZE ; 
+                            y_val_ = 0;
+                            on_ground = false;
+                        }
+                }
     }
-    mRect.x += x_val_;
     mRect.y += y_val_;
+
     if (mRect.x < 0 )
         {
             mRect.x = 0 ;

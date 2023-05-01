@@ -3,6 +3,7 @@
 #include "BaseObject.h"
 #include "MainObject.h"
 #include "Gamemap.h"
+// #include "Time.h"
 LTexture gBackgroundTexture; 
        
 MainObject test;      // nhân vật chính
@@ -66,7 +67,7 @@ bool loadMedia()
 	//Loading success flag
 	bool success = true;
 
-	if( !gBackgroundTexture.loadFromFile( "Image//image.png" ) )
+	if( !gBackgroundTexture.loadFromFile( "Image/a.png" ) )
 	{
 		printf( "Failed to load background texture image!\n" );
 		success = false;
@@ -101,7 +102,7 @@ void close()  //Tile* tiles[]
     
 int main( int argc, char* args[] )
 {
-	
+	// Time time_game ;
 	if( !init() )
 	{
 		printf( "Failed to initialize!\n" );
@@ -124,6 +125,7 @@ int main( int argc, char* args[] )
 			bool quit = false;
 			while( !quit )
 			{
+				// time_game.start(); // bat dau tinh h
 				//Handle events on queue
 				while( SDL_PollEvent( & g_event ) != 0 )
 				{
@@ -141,10 +143,9 @@ int main( int argc, char* args[] )
 
 
 				// Render background texture to screen hiện thị ra
-				// gBackgroundTexture.render(0,0, &camera,0,nullptr,SDL_FLIP_NONE);
-				
 				Map map_data = game_Map.GetMap(); // laays du lieu map trong game map
 				test.SetMap_X_Y(map_data.start_x,map_data.start_y);
+				gBackgroundTexture.render(0,0, nullptr,0,nullptr,SDL_FLIP_NONE);
 
 				test.handleMove(map_data);
 
@@ -156,12 +157,19 @@ int main( int argc, char* args[] )
 
 
 				SDL_RenderPresent( gRenderer );
+
+				// int real_time = time_game.get_ticks();
+				// int time_one_frame = 1000 / FRAME_PER_SECOND ; //1000ms dc bn  khung hinh
+				// if (real_time < time_one_frame)
+				// 	{
+				// 		int delay_time = time_one_frame - real_time ;
+				// 		if (delay_time > 0)
+				// 			SDL_Delay(delay_time);
+				// 	}
 			}
 		}
-		close();//tileSet
+		close();
 	}
-
 	//Free resources and close SDL
-	
 	return 0;
 }
