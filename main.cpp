@@ -3,7 +3,7 @@
 #include "BaseObject.h"
 #include "MainObject.h"
 #include "Gamemap.h"
-// #include "Time.h"
+#include "Time.h"
 LTexture gBackgroundTexture; 
        
 MainObject test;      // nhân vật chính
@@ -75,7 +75,7 @@ bool loadMedia()
 	
 	return success;
 }
- 
+    
 void close()  //Tile* tiles[]
 {
 	// for( int i = 0; i < TOTAL_TILES; ++i )
@@ -102,7 +102,7 @@ void close()  //Tile* tiles[]
     
 int main( int argc, char* args[] )
 {
-	// Time time_game ;
+	
 	if( !init() )
 	{
 		printf( "Failed to initialize!\n" );
@@ -111,7 +111,7 @@ int main( int argc, char* args[] )
 	{
 
 		//Load media
-		if( !loadMedia() ) //tileSet
+		if( !loadMedia() ) 
 		{
 			printf( "Failed to load media!\n" );
 		}
@@ -120,6 +120,8 @@ int main( int argc, char* args[] )
 			GameMap game_Map;
 			game_Map.LoadText("map/map01.dat");
 			game_Map.LoadTiles();
+
+			Time time_game ;
 			//Main loop flag
 
 			bool quit = false;

@@ -1,7 +1,7 @@
 #include "MainObject.h"
 #include "Bullet.h"
 #include <vector>
-
+                                                            
 #define GRAVITY_SPEED 1 // trọng lực r ơi
 #define MAX_FALL_SPEED 4 // max speed 
 #define MAX_JUMP 4
@@ -91,10 +91,10 @@ void MainObject :: set_clip_4()
 {
     for (int i = 0; i < 10; ++i)
     {
-        frame_clip_4[i].x = i * mWidth / 10;
+        frame_clip_4[i].x = i * mWidth / 10+32;
         frame_clip_4[i].y = mHeight/2-8;
         frame_clip_4[i].h = mHeight/2+8;
-        frame_clip_4[i].w = mWidth / 10;
+        frame_clip_4[i].w = mWidth / 10 -64;
     }
 }
 
@@ -365,7 +365,7 @@ void MainObject ::handleEvent(SDL_Event events)
         {
             case SDLK_c:
             {
-                status_ = ATTACK;
+                input_type.C_input = 1;
             }
             break;
         default:
@@ -377,9 +377,9 @@ void MainObject ::handleEvent(SDL_Event events)
         switch (events.key.keysym.sym)
         {
             case SDLK_c: 
-        {
-            status_=STAND;
-        }
+                {
+                    input_type.C_input = 0;
+                }
         break;
         default:
             break;
@@ -415,13 +415,15 @@ void MainObject ::handleEvent(SDL_Event events)
     //     }
     // }
     // ATTACK_1
+    
+    // ATTACK 
     if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
     {
         switch (events.key.keysym.sym)
         {
             case SDLK_v:
             {
-                status_ = ATTACK1;
+                input_type.V_input = 1;
             }
             break;
         default:
@@ -433,68 +435,68 @@ void MainObject ::handleEvent(SDL_Event events)
         switch (events.key.keysym.sym)
         {
             case SDLK_v: 
-        {
-            status_=STAND;
-        }
+            {
+                input_type.V_input = 0;
+            }
         break;
         default:
             break;
         }
     }
     // ATTACK_2
-    if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
-    {
-        switch (events.key.keysym.sym)
-        {
-            case SDLK_b:
-            {
-                status_ = ATTACK2;
-            }
-            break;
-        default:
-            break;
-        }
-    }
-    else if (events.type == SDL_KEYUP && events.key.repeat == 0)
-    {
-        switch (events.key.keysym.sym)
-        {
-            case SDLK_b: 
-        {
-            status_=STAND;
-        }
-        break;
-        default:
-            break;
-        }
-    }
+    // if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
+    // {
+    //     switch (events.key.keysym.sym)
+    //     {
+    //         case SDLK_b:
+    //         {
+    //             status_ = ATTACK2;
+    //         }
+    //         break;
+    //     default:
+    //         break;
+    //     }
+    // }
+    // else if (events.type == SDL_KEYUP && events.key.repeat == 0)
+    // {
+    //     switch (events.key.keysym.sym)
+    //     {
+    //         case SDLK_b: 
+    //     {
+    //         status_=STAND;
+    //     }
+    //     break;
+    //     default:
+    //         break;
+    //     }
+    // }
     // ATTACK_4
-    if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
-    {
-        switch (events.key.keysym.sym)
-        {
-            case SDLK_n:
-            {
-                status_ = ATTACK3;
-            }
-            break;
-        default:
-            break;
-        }
-    }
-    else if (events.type == SDL_KEYUP && events.key.repeat == 0)
-    {
-        switch (events.key.keysym.sym)
-        {
-            case SDLK_n: 
-        {
-            status_=STAND;
-        }
-        break;
-        default:
-            break;
-        }
-    }
+    // if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
+    // {
+    //     switch (events.key.keysym.sym)
+    //     {
+    //         case SDLK_n:
+    //         {
+    //             status_ = ATTACK3;
+    //         }
+    //         break;
+    //     default:
+    //         break;
+    //     }
+    // }
+    // else if (events.type == SDL_KEYUP && events.key.repeat == 0)
+    // {
+    //     switch (events.key.keysym.sym)
+    //     {
+    //         case SDLK_n: 
+    //     {
+    //         status_=STAND;
+    //     }
+    //     break;
+    //     default:
+    //         break;
+    //     }
+    // }
 }
 // move
 void MainObject::handleMove(Map & map_data_)
@@ -505,31 +507,15 @@ void MainObject::handleMove(Map & map_data_)
         
     if (status1_==RIGHT)
     {
-        // if (status_ == WALK )  bản cũ
-        //     {
-        //         x_val_ = 2;
-        //     }
-        // if (status_ == RUN )
-        //     {
-        //         x_val_ = 4;
-        //     }
-        // if (status_ == JUMP && on_ground == true)
-        //     {
-        //         y_val_ = -3;
-        //     }
-        // if ( status_ == FALL )
-        //     {
-        //         y_val_ = 3;
-        //     }
         if (on_ground ==  true &&  input_type.D_input == 1)
             {
                 status_ = WALK;
-                x_val_ = 2;
+                x_val_ = 3;
             }
         else if (on_ground ==  true  && input_type.S_input == 1)
             {
                 status_ = RUN;
-                x_val_ = 4;
+                x_val_ = 5;
             }
         else if (on_ground == true && move == false) //đang đứng yên
             {
@@ -538,64 +524,48 @@ void MainObject::handleMove(Map & map_data_)
         else if (on_ground == false && move == true && input_type.W_input == 0  ) // đang rơi
             {
                 status_ = FALL;
+                if ( status_ == FALL && input_type.D_input == 1)
+                    {
+                        x_val_ = 3;
+                    }
                 y_val_  = 4; 
             }
-            
-        // else if (on_ground == false &&  input_type.W_input == 1) // nhảy lên bị chạm chướng ngại vật
-        //     {
-        //         // có thể rơi hoặc đứng yên nếu giữ  phím w
-        //         status_ = JUMP;
-              //     }
-        else if (input_type.W_input== 1 )
+        else if (input_type.W_input== 1 && (on_ground || status_ == STAND) )
             {  
                 if (input_type.D_input == 1 )
                         {                    
                             x_val_ = 2;
                         }
-                y_val_ = -3;
+                y_val_ = -10;
                 status_ = JUMP;
                 on_ground = false;
             }
+        else if (status_ == STAND )
+            {
+                if (input_type.A_input == 1)
+                    {
+                        status_ = WALK;
+                        x_val_ = -3;
+                    }
+                else if (input_type.S_input == 1)
+                    {
+                        status_ = RUN;
+                        x_val_ = -5;
+                    }
+            }
+        
     }
     else if (status1_ == LEFT)
     {
-        // if (status_ == WALK )
-        //     {
-        //         // if (on_ground == false)
-        //         //     {
-        //         //         status_ = FALL ;
-        //         //     }
-        //         // else
-        //         //     {
-        //             x_val_ = -2;
-        //     }
-        // if (status_ == RUN )
-        //     {
-        //         // if (on_ground == false)
-        //         //     {
-        //         //         status_ = FALL ;
-        //         //     }
-        //         // else
-        //         //     {
-        //                 x_val_ = -4;
-        //     }
-        // if (status_ == JUMP && on_ground == true)
-        //     {
-        //         y_val_ = -3;
-        //     }
-        // if (status_ == FALL)
-        //     {
-        //         y_val_ = 3;
-        //     }
         if (on_ground ==  true && input_type.A_input == 1)
             {
                 status_ = WALK;
-                x_val_ = -2;
+                x_val_ = -3;
             }
         else if (on_ground ==  true && input_type.S_input == 1)
             {
                 status_ = RUN;
-                 x_val_ = -4;
+                 x_val_ = -5;
             }
         else if (on_ground == true && move == false) //đang đứng yên
             {
@@ -604,17 +574,34 @@ void MainObject::handleMove(Map & map_data_)
         else if (on_ground == false  && move== true && input_type.W_input == 0 ) // đang rơi
             {
                 status_ = FALL;
+                if (status_ == FALL && input_type.A_input == 1)
+                            {
+                                x_val_ = -3;  
+                            }                
                 y_val_  = 4; 
             }
-        else if (input_type.W_input== 1 )
+        else if (input_type.W_input== 1 && (on_ground == true || status_ == STAND ))
             {  
                 if (input_type.A_input == 1 )
                         {                    
                             x_val_ = -2;
                         }
-                    y_val_ = -3;
+                    y_val_ = -10;
                     status_ = JUMP;
                     on_ground = false;
+            }
+        else if (status_ == STAND )
+            {
+                if (input_type.A_input == 1)
+                    {
+                        status_ = WALK;
+                        x_val_ = -3;
+                    }
+                else if (input_type.S_input == 1)
+                    {
+                        status_ = RUN;
+                        x_val_ = -5;
+                    }
             }
         
     }
@@ -839,8 +826,6 @@ void MainObject::checkMap(Map & map_data_)
 {
     int x1 = 0; // điểm đầu
     int x2 = 0; // điểm kết thúc của check
-    int x3 = 0;
-    int x4 = 0;
 
     int y1 = 0;
     int y2 = 0;
@@ -903,10 +888,6 @@ void MainObject::checkMap(Map & map_data_)
     x1 = ( mRect.x ) / TILE_SIZE;  
 
     x2 = (mRect.x + mRect.w ) / TILE_SIZE;
-
-    // x3 = (mRect.x+mRect.w + x_val_)/TILE_SIZE;
-
-    // x4 = (mRect.x+mRect.w - x_val_)/TILE_SIZE;
 
     y1 = (mRect.y +y_val_) / TILE_SIZE;
 
