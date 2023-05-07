@@ -1,79 +1,102 @@
 #include "time.h"
 
-Time ::Time ()
+LTimer::LTimer()
 {
-    start_time =0 ;
-    pause_time = 0;
+    //Initialize the variables
+    mStartTicks = 0;
+    mPausedTicks = 0;
 
-    is_paused = false ;
-    is_started = false;
-}
-Time ::~Time()
-{
-
+    mPaused = false;
+    mStarted = false;
 }
 
-void Time::start()
+void LTimer::start()
 {
-    is_started = true;
-    is_paused = false ;
+    //Start the timer
+    mStarted = true;
+
+    //Unpause the timer
+    mPaused = false;
 
     //Get the current clock time
-    start_time = SDL_GetTicks() ;
-    pause_time = 0;
+    mStartTicks = SDL_GetTicks();
+	mPausedTicks = 0;
 }
 
-void Time::stop()
+void LTimer::stop()
 {
-    is_paused = false ;
-    is_started = false;
+    //Stop the timer
+    mStarted = false;
 
-    //Clear tick variables
-    start_time = 0;
-    pause_time = 0;
-}
-void Time::paused()
-{
-    if (is_started && is_paused == false )
-        {
-            is_paused = true;
-            //Calculate the paused ticks
-            pause_time = SDL_GetTicks() - start_time ;
-            start_time = 0;
-        }
-}
-void Time :: unpaused()
-{
-    if (is_paused == true && is_started == true)
-        {
-            is_paused = false;
-            //Reset the starting ticks
-            is_started = SDL_GetTicks() - pause_time ;
-            //Reset the paused ticks
-            pause_time = 0;
-        }
-}
-int Time:: get_ticks() // laays thoi gian
-{
-    if (is_started == true)
-        {
-            if (is_paused == true)
-                {
-                    return pause_time ;
-                }
-            else
-                {
-                    return SDL_GetTicks() - start_time;
-                }
-        }
-    return 0 ;
+    //Unpause the timer
+    mPaused = false;
+	//Clear tick variables
+	mStartTicks = 0;
+	mPausedTicks = 0;
 }
 
-bool Time::is_paused_()
+void LTimer::pause()
 {
-    return is_paused ;
+    //If the timer is running and isn't already paused
+    if( mStarted && !mPaused )
+    {
+        //Pause the timer
+        mPaused = true;
+
+        //Calculate the paused ticks
+        mPausedTicks = SDL_GetTicks() - mStartTicks;
+		mStartTicks = 0;
+    }
 }
-bool Time:: is_started_()
+
+void LTimer::unpause()
 {
-    return is_started;
+    //If the timer is running and paused
+    if( mStarted && mPaused )
+    {
+        //Unpause the timer
+        mPaused = false;
+
+        //Reset the starting ticks
+        mStartTicks = SDL_GetTicks() - mPausedTicks;
+
+        //Reset the paused ticks
+        mPausedTicks = 0;
+    }
+}
+
+Uint32 LTimer::getTicks()
+{
+	//The actual timer time
+	Uint32 time = 0;
+
+    //If the timer is running
+    if( mStarted )
+    {
+        //If the timer is paused
+        if( mPaused )
+        {
+            //Return the number of ticks when the timer was paused
+            time = mPausedTicks;
+        }
+        else
+        {
+            //Return the current time minus the start time
+            time = SDL_GetTicks() - mStartTicks;
+        }
+    }
+
+    return time;
+}
+
+bool LTimer::isStarted()
+{
+	//Timer is running and paused or unpaused
+    return mStarted;
+}
+
+bool LTimer::isPaused()
+{
+	//Timer is running and paused
+    return mPaused && mStarted;
 }

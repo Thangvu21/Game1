@@ -8,6 +8,8 @@ double degrees = 0 ;
    
 SDL_RendererFlip flipType = SDL_FLIP_NONE ;
 
+TTF_Font* gFont = NULL;
+
 // SDL_Rect gTileClips[ TOTAL_TILE_SPRITES ];
 
 // bool checkCollision (SDL_Rect a , SDL_Rect b)

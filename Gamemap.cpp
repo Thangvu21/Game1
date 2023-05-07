@@ -63,7 +63,6 @@ void GameMap::LoadTiles()
 		{
 			continue;
 		}
-
 		fclose(fp);
 		tile_map_[i].loadFromFile(file_img);
 	}

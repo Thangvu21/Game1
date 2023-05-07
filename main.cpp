@@ -4,8 +4,10 @@
 #include "MainObject.h"
 #include "Gamemap.h"
 #include "Time.h"
+#include "Button.h"
+#include "SDL_ttf.h"
 LTexture gBackgroundTexture; 
-       
+LButton gButtons[5];
 MainObject test;      // nhân vật chính
 
 bool init()
@@ -72,29 +74,64 @@ bool loadMedia()
 		printf( "Failed to load background texture image!\n" );
 		success = false;
 	}
-	
+	gFont = TTF_OpenFont( "lazy.ttf", 28 );
+	if( gFont == NULL )
+	{
+		printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
+		success = false;
+	}
+	else
+	{
+		//Set text color as black
+		SDL_Color textColor = { 0, 0, 0, 255 };
+		
+		//Load stop prompt texture
+		if (!gButtons[0].loadFromRenderedText(gFont,"PLAY",textColor))
+		{
+			printf( "Unable to render play prompt texture!\n" );
+			success = false;
+		}
+		if(!gButtons[1].loadFromRenderedText(gFont,"PAUSE",textColor))
+		{
+			printf( "Unable to render pause prompt texture!\n" );
+			success = false;
+		}
+		if(!gButtons[2].loadFromRenderedText(gFont,"UNPAUSED",textColor))
+		{
+			printf( "Unable to render unpause prompt texture!\n" );
+			success = false;
+		}
+		if(!gButtons[3].loadFromRenderedText(gFont,"RETURN",textColor))
+		{
+			printf( "Unable to render exit prompt texture!\n" );
+			success = false;
+		}
+		if(!gButtons[4].loadFromRenderedText(gFont,"EXIT",textColor))
+		{
+			printf( "Unable to render exit prompt texture!\n" );
+			success = false;
+		}
+		gButtons[0].setPosition(SCREEN_WIDTH/2,SCREEN_HEIGHT/2+100,79, 28);
+		gButtons[1].setPosition(SCREEN_WIDTH/2,SCREEN_HEIGHT/2+150,79, 28);
+		gButtons[2].setPosition(SCREEN_WIDTH/2,SCREEN_HEIGHT/2+150,79, 28);
+		gButtons[3].setPosition(SCREEN_WIDTH/2,SCREEN_HEIGHT/2+150,79, 28);
+		gButtons[4].setPosition(SCREEN_WIDTH/2,SCREEN_HEIGHT/2+200,79, 28);
+	}
 	return success;
 }
-    
-void close()  //Tile* tiles[]
+
+void close()  
 {
-	// for( int i = 0; i < TOTAL_TILES; ++i )
-	// {
-	// 	 if( tiles[ i ] != NULL )
-	// 	 {
-	// 		delete tiles[ i ];
-	// 		tiles[ i ] = NULL;
-	// 	 }
-	// }
 	//Free loaded images
-	// gBackgroundTexture.free();
+	gBackgroundTexture.free();
 	test.free();
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
 	SDL_DestroyWindow( gWindow );
 	gWindow = NULL;
 	gRenderer = NULL;
-	
+	TTF_CloseFont( gFont );
+	gFont = NULL;
 	//Quit SDL subsystems
 	IMG_Quit();
 	SDL_Quit();
@@ -109,7 +146,6 @@ int main( int argc, char* args[] )
 	}
 	else
 	{
-
 		//Load media
 		if( !loadMedia() ) 
 		{
@@ -117,17 +153,48 @@ int main( int argc, char* args[] )
 		}
 		else
 		{	
+			while (true)
+			{
+				bool quit = false;
+				
+				SDL_Color textColor = { 0, 0, 0, 255 };
+				
+				LTimer timer;
+				while (!quit)
+				{
+					while (SDL_PollEvent(&g_event) != 0)
+						{
+								//User requests quit
+							if( g_event.type == SDL_QUIT )
+							{
+								quit = true;
+							}
+							//Reset start time on return keypress
+							if(gButtons[0].handleEvent(&g_event))
+								{
+									quit = true;
+									// thêm j thì giải phóng ở đây
+								}
+							if (gButtons[4].handleEvent(&g_event))
+								{
+									close();
+									return 0;
+								}
+						}
+					SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+					SDL_RenderClear( gRenderer );
+					gButtons[0].render_();
+					gButtons[4].render_();
+					SDL_RenderPresent( gRenderer );
+				}
+			quit = false;
 			GameMap game_Map;
 			game_Map.LoadText("map/map01.dat");
 			game_Map.LoadTiles();
-
-			Time time_game ;
 			//Main loop flag
-
-			bool quit = false;
 			while( !quit )
 			{
-				// time_game.start(); // bat dau tinh h
+				timer.start();
 				//Handle events on queue
 				while( SDL_PollEvent( & g_event ) != 0 )
 				{
@@ -157,9 +224,7 @@ int main( int argc, char* args[] )
 				game_Map.SetMap(map_data);
 				game_Map.DrawMap();
 
-
 				SDL_RenderPresent( gRenderer );
-
 				// int real_time = time_game.get_ticks();
 				// int time_one_frame = 1000 / FRAME_PER_SECOND ; //1000ms dc bn  khung hinh
 				// if (real_time < time_one_frame)
@@ -169,7 +234,36 @@ int main( int argc, char* args[] )
 				// 			SDL_Delay(delay_time);
 				// 	}
 			}
-		}
+			quit = false;
+			while (!quit) // vòng lặp game
+			{
+				while(SDL_PollEvent( &g_event ) != 0)
+					{
+					if( g_event.type == SDL_QUIT )
+						{
+							quit = true;
+						}
+					//Reset start time on return keypress
+					if(gButtons[3].handleEvent(&g_event))
+						{
+							timer.stop();
+							quit = true;
+							// thêm j thì giải phóng ở đây
+						}
+					if (gButtons[4].handleEvent(&g_event))
+						{
+							close();
+							return 0;
+						}
+					}
+				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+				SDL_RenderClear( gRenderer );
+				gButtons[3].render_();
+				gButtons[4].render_();
+				SDL_RenderPresent( gRenderer );
+			}
+		}		
+	}
 		close();
 	}
 	//Free resources and close SDL

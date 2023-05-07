@@ -41,4 +41,13 @@ void Explosion ::show_Explosion()
 {
     loadFromFile("Image/explosion.png");
     set_clip_Explosion();
+    SDL_Rect * Current_fame = & clip_Explosion[frame_Explosion/10];
+    mExplosion_rect.w = clip_Explosion[0].w;
+    mExplosion_rect.h = clip_Explosion[0].h;
+    render(mExplosion_rect.x,mExplosion_rect.y,clip_Explosion,0,nullptr,SDL_FLIP_NONE);
+    frame_Explosion ++;
+    if (frame_Explosion/10 >=25)
+		{
+			frame_Explosion = 0;
+		}
 }
