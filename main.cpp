@@ -6,6 +6,7 @@
 #include "Time.h"
 #include "Button.h"
 #include "SDL_ttf.h"
+#include "Explosion.h"
 LTexture gBackgroundTexture; 
 LButton gButtons[5];
 MainObject test;      // nhân vật chính
@@ -79,7 +80,7 @@ bool loadMedia()
 		printf( "Failed to load background texture image!\n" );
 		success = false;
 	}
-	gFont = TTF_OpenFont( "lazy.ttf", 28 );
+	gFont = TTF_OpenFont( "menu/GameName.ttf", 28 );
 	if( gFont == NULL )
 	{
 		printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -125,11 +126,54 @@ bool loadMedia()
 	return success;
 }
 
+
+std:: vector<Explosion *> Make_Explosion_List()
+	{
+		std:: vector<Explosion*> List_Explosion;
+		Explosion* EX = new Explosion[5];
+		Explosion * p_EX =  (EX);
+			if (p_EX != NULL)
+				{
+					p_EX->set_clip_Explosion();
+					p_EX->set_Position(108,6);
+					List_Explosion.push_back(p_EX);
+				}
+		Explosion * p_EX_1 =  (EX+1);
+			if (p_EX_1 != NULL)
+				{
+					p_EX_1->set_clip_Explosion();
+					p_EX_1->set_Position(108,6);
+					List_Explosion.push_back(p_EX_1);
+				}
+		Explosion * p_EX_2 =  (EX+2);
+			if (p_EX_2 != NULL)
+				{
+					p_EX_2->set_clip_Explosion();
+					p_EX_2->set_Position(250,6);
+					List_Explosion.push_back(p_EX_2);
+				}
+		Explosion * p_EX_3 =  (EX+3);
+			if (p_EX_3 != NULL)
+				{
+					p_EX_3->set_clip_Explosion();
+					p_EX_3->set_Position(70,6);
+					List_Explosion.push_back(p_EX_3);
+				}
+		Explosion * p_EX_4 =  (EX+4);
+			if (p_EX_4 != NULL)
+				{
+					p_EX_4->set_clip_Explosion();
+					p_EX_4->set_Position(390,6);
+					List_Explosion.push_back(p_EX_4);
+				}
+		return List_Explosion;
+	}
 void close()  
 {
 	//Free loaded images
 	gBackgroundTexture.free();
-	test.free();
+	test.free();	
+	// test_.free();
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
 	SDL_DestroyWindow( gWindow );
@@ -163,7 +207,7 @@ int main( int argc, char* args[] )
 				bool quit = false;
 				
 				SDL_Color textColor = { 0, 0, 0, 255 };
-				
+				int frame =0;
 				LTimer timer;
 				while (!quit)
 				{
@@ -172,7 +216,8 @@ int main( int argc, char* args[] )
 								//User requests quit
 							if( g_event.type == SDL_QUIT )
 							{
-								quit = true;
+								close();
+								return 0;
 							}
 							//Reset start time on return keypress
 							if(gButtons[0].handleEvent(&g_event))
@@ -196,6 +241,10 @@ int main( int argc, char* args[] )
 			GameMap game_Map;
 			game_Map.LoadText("map/map01.dat");
 			game_Map.LoadTiles();
+			Map map_data = game_Map.GetMap(); // laays du lieu map trong game map
+			Map EX = game_Map.GetMap();
+			std::vector<Explosion*> L_Explosion = Make_Explosion_List();
+			
 			//Main loop flag
 			while( !quit )
 			{
@@ -215,9 +264,8 @@ int main( int argc, char* args[] )
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
 
-
 				// Render background texture to screen hiện thị ra
-				Map map_data = game_Map.GetMap(); // laays du lieu map trong game map
+				
 				test.SetMap_X_Y(map_data.start_x,map_data.start_y);
 				gBackgroundTexture.render(0,0, nullptr,0,nullptr,SDL_FLIP_NONE);
 
@@ -228,16 +276,34 @@ int main( int argc, char* args[] )
 				// test.handleBullet();
 				game_Map.SetMap(map_data);
 				game_Map.DrawMap();
-
+				for (int i = 0; i< L_Explosion.size(); i++)
+					{
+						Explosion * p_EX = L_Explosion.at(i);
+						if (p_EX != NULL)
+							{
+								p_EX->SetMap_X_Y(map_data.start_x,map_data.start_y);
+								p_EX->move_Explosion(map_data);
+								p_EX->show_Explosion();
+							}
+						else 
+							{
+								std::cout<<"need fixx"<<std::endl;
+							}
+					}
+				
+				if ( test.checkMap(map_data) == false)
+					{
+						quit = true;
+					}
 				SDL_RenderPresent( gRenderer );
-				// int real_time = time_game.get_ticks();
-				// int time_one_frame = 1000 / FRAME_PER_SECOND ; //1000ms dc bn  khung hinh
-				// if (real_time < time_one_frame)
-				// 	{
-				// 		int delay_time = time_one_frame - real_time ;
-				// 		if (delay_time > 0)
-				// 			SDL_Delay(delay_time);
-				// 	}
+				int real_time = timer.getTicks();
+				int time_one_frame = 1000 / FRAME_PER_SECOND ; //1000ms dc bn  khung hinh
+				if (real_time < time_one_frame)
+					{
+						int delay_time = time_one_frame - real_time ;
+						if (delay_time > 0)
+							SDL_Delay(delay_time);
+					}
 			}
 			quit = false;
 			while (!quit) // vòng lặp game
@@ -252,7 +318,12 @@ int main( int argc, char* args[] )
 					if(gButtons[3].handleEvent(&g_event))
 						{
 							timer.stop();
+							test.Set_x_y(100,100);
+							
+							test.Set_status(4);
+							test.Set_status1(0);
 							quit = true;
+
 							// thêm j thì giải phóng ở đây
 						}
 					if (gButtons[4].handleEvent(&g_event))

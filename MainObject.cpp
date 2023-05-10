@@ -16,7 +16,13 @@ MainObject ::MainObject()
 
     map_x_ = 0;
     map_y_ = 0;
-
+    
+    input_type.A_input = 0;
+    input_type.C_input = 0;
+    input_type.D_input = 0;
+    input_type.S_input = 0;
+    input_type.V_input = 0;
+    input_type.W_input = 0;
     mRect.x = 100;
     mRect.y = 100;
     status_ = FALL;
@@ -152,10 +158,10 @@ void MainObject ::handleEvent(SDL_Event events)
                     flipType = SDL_FLIP_NONE;
                 }
             input_type.D_input = 1;
+            // std::cout<<input_type.D_input<<std::endl;
             move = true;
         }
-         
-        break;
+       
         default:
             break;
         }
@@ -167,6 +173,7 @@ void MainObject ::handleEvent(SDL_Event events)
             case SDLK_d:
             {
                 input_type.D_input = 0;
+                // std::cout<<input_type.D_input<<std::endl;
             }
         break;
         default:
@@ -503,16 +510,15 @@ void MainObject::handleMove(Map & map_data_)
 {           
     x_val_ = 0;
     // y_val_  = GRAVITY_SPEED;
-
         
     if (status1_==RIGHT)
     {
-        if (on_ground ==  true &&  input_type.D_input == 1)
+        if ((on_ground || status_ == STAND) &&  input_type.D_input == 1) //(on_ground || status_ == STAND) && 
             {
                 status_ = WALK;
                 x_val_ = 3;
             }
-        else if (on_ground ==  true  && input_type.S_input == 1)
+        else if ( (on_ground || status_ == STAND) &&  input_type.S_input == 1)
             {
                 status_ = RUN;
                 x_val_ = 5;
@@ -540,29 +546,25 @@ void MainObject::handleMove(Map & map_data_)
                 status_ = JUMP;
                 on_ground = false;
             }
-        else if (status_ == STAND )
-            {
-                if (input_type.A_input == 1)
-                    {
-                        status_ = WALK;
-                        x_val_ = -3;
-                    }
-                else if (input_type.S_input == 1)
-                    {
-                        status_ = RUN;
-                        x_val_ = -5;
-                    }
-            }
-        
+        // else if (status_ == STAND && input_type.A_input == 1)
+        //     {
+        //         status_ = WALK;
+        //         x_val_ = 3;
+        //     }
+        // else if (status_ == STAND && input_type.S_input == 1)
+        //     {
+        //                 status_ = RUN;
+        //                 x_val_ = 5;
+        //     }
     }
     else if (status1_ == LEFT)
     {
-        if (on_ground ==  true && input_type.A_input == 1)
+        if ((on_ground || status_ == STAND) && input_type.A_input == 1)
             {
                 status_ = WALK;
                 x_val_ = -3;
             }
-        else if (on_ground ==  true && input_type.S_input == 1)
+        else if ((on_ground || status_ == STAND) && input_type.S_input == 1)
             {
                 status_ = RUN;
                  x_val_ = -5;
@@ -590,25 +592,17 @@ void MainObject::handleMove(Map & map_data_)
                     status_ = JUMP;
                     on_ground = false;
             }
-        else if (status_ == STAND )
-            {
-                if (input_type.A_input == 1)
-                    {
-                        status_ = WALK;
-                        x_val_ = -3;
-                    }
-                else if (input_type.S_input == 1)
-                    {
-                        status_ = RUN;
-                        x_val_ = -5;
-                    }
-            }
-        
+        // else if (status_ == STAND && input_type.A_input == 1)
+        //     {
+        //         status_ = WALK;
+        //         x_val_ = -3;
+        //     }
+        // else if (status_ == STAND && input_type.S_input == 1)
+        //     {
+        //                 status_ = RUN;
+        //                 x_val_ = -5;
+        //     }
     }
-    if (input_type.W_input == 0 && input_type.A_input== 0 && input_type.D_input == 0 && input_type.S_input == 0)
-            {
-                move=false;
-            }
     if ( status_ == RUN || status_ == WALK || status_ == STAND)
             {
                 if (on_ground == false)
@@ -617,6 +611,10 @@ void MainObject::handleMove(Map & map_data_)
                         y_val_ = 4;
                     }
             } 
+    if (input_type.W_input == 0 && input_type.A_input== 0 && input_type.D_input == 0 && input_type.S_input == 0)
+            {
+                move=false;
+            }
     checkMap(map_data_);
     SetCamera_Entity_Map(map_data_);
 }
@@ -822,8 +820,9 @@ void MainObject ::Show(int x, int y )
 //         camera.y = LEVEL_HEIGHT - camera.h;
 //     }
 // }
-void MainObject::checkMap(Map & map_data_)
+bool MainObject::checkMap(Map & map_data_)
 {
+    bool check = true;
     int x1 = 0; // điểm đầu
     int x2 = 0; // điểm kết thúc của check
 
@@ -927,6 +926,11 @@ void MainObject::checkMap(Map & map_data_)
             mRect.x = map_data_.max_x_ - mRect.w -1; 
         }
 
+    if ( mRect.y >map_data_.max_y_ )
+        {
+            check = false;
+        }
+    return check;
 }
 int MainObject ::GetWidth()
 {
@@ -935,4 +939,9 @@ int MainObject ::GetWidth()
 int MainObject ::GetHeight()
 {
     return mHeight;
+}
+void MainObject ::Set_x_y(int x,int y)
+{
+    mRect.x = x;
+    mRect.y = y;
 }
