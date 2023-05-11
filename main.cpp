@@ -130,43 +130,60 @@ bool loadMedia()
 std:: vector<Explosion *> Make_Explosion_List()
 	{
 		std:: vector<Explosion*> List_Explosion;
-		Explosion* EX = new Explosion[5];
-		Explosion * p_EX =  (EX);
+		Explosion * p_EX =  new Explosion;
 			if (p_EX != NULL)
 				{
 					p_EX->set_clip_Explosion();
-					p_EX->set_Position(108,6);
+					p_EX->set_Position(14,6);
 					List_Explosion.push_back(p_EX);
 				}
-		Explosion * p_EX_1 =  (EX+1);
+		Explosion * p_EX_1 =  new Explosion;
 			if (p_EX_1 != NULL)
 				{
 					p_EX_1->set_clip_Explosion();
 					p_EX_1->set_Position(108,6);
 					List_Explosion.push_back(p_EX_1);
 				}
-		Explosion * p_EX_2 =  (EX+2);
+		Explosion * p_EX_2 =  new Explosion;
 			if (p_EX_2 != NULL)
 				{
 					p_EX_2->set_clip_Explosion();
 					p_EX_2->set_Position(250,6);
 					List_Explosion.push_back(p_EX_2);
 				}
-		Explosion * p_EX_3 =  (EX+3);
+		Explosion * p_EX_3 =  new Explosion;
 			if (p_EX_3 != NULL)
 				{
 					p_EX_3->set_clip_Explosion();
-					p_EX_3->set_Position(70,6);
+					p_EX_3->set_Position(70,5);
 					List_Explosion.push_back(p_EX_3);
 				}
-		Explosion * p_EX_4 =  (EX+4);
+		Explosion * p_EX_4 =  new Explosion;
 			if (p_EX_4 != NULL)
 				{
 					p_EX_4->set_clip_Explosion();
 					p_EX_4->set_Position(390,6);
 					List_Explosion.push_back(p_EX_4);
 				}
+		Explosion * p_EX_5 = new Explosion;
+			if (p_EX_5 != NULL)
+				{
+					p_EX_5->set_clip_Explosion();
+					p_EX_5->set_Position(120,6);
+					List_Explosion.push_back(p_EX_5);
+				}
 		return List_Explosion;
+	}
+void close_ (std::vector<Explosion*> List_Explosion)
+	{
+		for (int i = 0; i< int(List_Explosion.size()); i++)
+			{
+				Explosion * p_EX = List_Explosion[i];
+					if (p_EX != NULL)
+						{
+							p_EX->free();
+						}	
+			}
 	}
 void close()  
 {
@@ -255,7 +272,9 @@ int main( int argc, char* args[] )
 					//User requests quit
 					if( g_event.type == SDL_QUIT )
 					{
-						quit = true;
+						test.free();
+						close_(L_Explosion);
+						return 0;
 					}
 					test.handleEvent(g_event);
 				}
@@ -276,9 +295,9 @@ int main( int argc, char* args[] )
 				// test.handleBullet();
 				game_Map.SetMap(map_data);
 				game_Map.DrawMap();
-				for (int i = 0; i< L_Explosion.size(); i++)
+				for (int i = 0; i< int(L_Explosion.size()); i++)
 					{
-						Explosion * p_EX = L_Explosion.at(i);
+						Explosion * p_EX = L_Explosion[i];
 						if (p_EX != NULL)
 							{
 								p_EX->SetMap_X_Y(map_data.start_x,map_data.start_y);
@@ -288,6 +307,13 @@ int main( int argc, char* args[] )
 						else 
 							{
 								std::cout<<"need fixx"<<std::endl;
+							}
+						SDL_Rect rect_player = test.getRect(); // laays ra cua main
+						SDL_Rect rect_EX = p_EX->get_Rect(); // lay cua EX
+						bool check_end  = checkCollision(rect_player,rect_EX);
+						if (check_end == true)
+							{
+								quit = true;
 							}
 					}
 				
@@ -312,7 +338,9 @@ int main( int argc, char* args[] )
 					{
 					if( g_event.type == SDL_QUIT )
 						{
-							quit = true;
+							test.free();
+							close_(L_Explosion); // giair phongs booj nhows
+							return 0;
 						}
 					//Reset start time on return keypress
 					if(gButtons[3].handleEvent(&g_event))
@@ -328,6 +356,8 @@ int main( int argc, char* args[] )
 						}
 					if (gButtons[4].handleEvent(&g_event))
 						{
+							test.free();
+							close_(L_Explosion); // giair phongs booj nhows
 							close();
 							return 0;
 						}
