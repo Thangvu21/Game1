@@ -7,10 +7,11 @@
 #include "Button.h"
 #include "SDL_ttf.h"
 #include "Explosion.h"
+#include "Knight.h"
 LTexture gBackgroundTexture; 
 LButton gButtons[5];
-MainObject test;      // nhân vật chính
-
+MainObject Chibi;      // nhân vật chính
+Knight Chibi_;
 bool init()
 {
 	//Initialization flag
@@ -182,6 +183,7 @@ void close_ (std::vector<Explosion*> List_Explosion)
 					if (p_EX != NULL)
 						{
 							p_EX->free();
+							p_EX = NULL;
 						}	
 			}
 	}
@@ -189,7 +191,8 @@ void close()
 {
 	//Free loaded images
 	gBackgroundTexture.free();
-	test.free();	
+	Chibi.free();	
+	Chibi_.free();
 	// test_.free();
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
@@ -261,7 +264,7 @@ int main( int argc, char* args[] )
 			Map map_data = game_Map.GetMap(); // laays du lieu map trong game map
 			Map EX = game_Map.GetMap();
 			std::vector<Explosion*> L_Explosion = Make_Explosion_List();
-			
+			Chibi_.set_clip();
 			//Main loop flag
 			while( !quit )
 			{
@@ -272,11 +275,12 @@ int main( int argc, char* args[] )
 					//User requests quit
 					if( g_event.type == SDL_QUIT )
 					{
-						test.free();
+						Chibi.free();
 						close_(L_Explosion);
+						close();
 						return 0;
 					}
-					test.handleEvent(g_event);
+					Chibi.handleEvent(g_event);
 				}
 
 				//Clear screen
@@ -285,14 +289,20 @@ int main( int argc, char* args[] )
 
 				// Render background texture to screen hiện thị ra
 				
-				test.SetMap_X_Y(map_data.start_x,map_data.start_y);
+				Chibi.SetMap_X_Y(map_data.start_x,map_data.start_y);
+				Chibi_.SetMap_X_Y(map_data.start_x,map_data.start_y);
 				gBackgroundTexture.render(0,0, nullptr,0,nullptr,SDL_FLIP_NONE);
 
-				test.handleMove(map_data);
+				Chibi.handleMove(map_data);
 
-				test.Show(test.getRect().x, test.getRect().y );
+				Chibi.Show(Chibi.getRect().x, Chibi.getRect().y );
 
-				// test.handleBullet();
+				SDL_Rect rect_player = Chibi.getRect(); // laays ra cua main
+
+				Chibi_.Show(399*64,3*64-8);
+
+				SDL_Rect rect_Knight = Chibi_.getRect(); // lay cua Knight
+				
 				game_Map.SetMap(map_data);
 				game_Map.DrawMap();
 				for (int i = 0; i< int(L_Explosion.size()); i++)
@@ -308,16 +318,22 @@ int main( int argc, char* args[] )
 							{
 								std::cout<<"need fixx"<<std::endl;
 							}
-						SDL_Rect rect_player = test.getRect(); // laays ra cua main
 						SDL_Rect rect_EX = p_EX->get_Rect(); // lay cua EX
+						
 						bool check_end  = checkCollision(rect_player,rect_EX);
+						
 						if (check_end == true)
 							{
 								quit = true;
 							}
 					}
-				
-				if ( test.checkMap(map_data) == false)
+				bool check_Win  = checkCollision(rect_player,rect_Knight);
+				if (check_Win == true)
+					{
+						quit = true;
+					}
+
+				if ( Chibi.checkMap(map_data) == false)
 					{
 						quit = true;
 					}
@@ -331,6 +347,7 @@ int main( int argc, char* args[] )
 							SDL_Delay(delay_time);
 					}
 			}
+			
 			quit = false;
 			while (!quit) // vòng lặp game
 			{
@@ -338,25 +355,24 @@ int main( int argc, char* args[] )
 					{
 					if( g_event.type == SDL_QUIT )
 						{
-							test.free();
+							Chibi.free();
 							close_(L_Explosion); // giair phongs booj nhows
+							close();
 							return 0;
 						}
 					//Reset start time on return keypress
 					if(gButtons[3].handleEvent(&g_event))
 						{
 							timer.stop();
-							test.Set_x_y(100,100);
-							
-							test.Set_status(4);
-							test.Set_status1(0);
+							Chibi.Set_x_y(100,100);
+							Chibi.Set_status(4);
+							Chibi.Set_status1(0);
 							quit = true;
 
 							// thêm j thì giải phóng ở đây
 						}
 					if (gButtons[4].handleEvent(&g_event))
 						{
-							test.free();
 							close_(L_Explosion); // giair phongs booj nhows
 							close();
 							return 0;

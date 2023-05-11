@@ -17,6 +17,8 @@ MainObject ::MainObject()
     map_x_ = 0;
     map_y_ = 0;
     
+    money =0;
+    
     input_type.A_input = 0;
     input_type.C_input = 0;
     input_type.D_input = 0;
@@ -104,40 +106,39 @@ void MainObject :: set_clip_4()
     }
 }
 
-void MainObject:: set_Bullet()
-{
-    // tao ra skill
+// void MainObject:: set_Bullet()
+// {
+//     // tao ra skill
 
-        Bullet * Main_bullet = new Bullet;
-        Main_bullet->loadFromFile ("Image/Bullet.png");
-        Main_bullet->set_IsMove(true);
-        mList_Bullet_.push_back(Main_bullet);
-}
-
-void MainObject:: handleBullet()
-{
-    for (int i=0; i< mList_Bullet_.size(); i++)
-        {
-            Bullet * skill = mList_Bullet_.at(i);
-            if (skill != NULL)
-                {
-                    if (skill->get_IsMove() == true)
-                        {
-                            skill->HandleMove();
-                            skill->render(mRect.x + mRect.w,mRect.y+ mRect.h/2 , nullptr ,0 ,nullptr ,SDL_FLIP_NONE);
-                        }
-                    else
-                        {
-                            mList_Bullet_.erase(mList_Bullet_.begin());
-                            if (skill != NULL)
-                                {
-                                    delete skill;
-                                    skill = NULL;
-                                }
-                        }
-                }
-        }
-}
+//         Bullet * Main_bullet = new Bullet;
+//         Main_bullet->loadFromFile ("Image/Bullet.png");
+//         Main_bullet->set_IsMove(true);
+//         mList_Bullet_.push_back(Main_bullet);
+// }
+// void MainObject:: handleBullet()
+// {
+//     for (int i=0; i< mList_Bullet_.size(); i++)
+//         {
+//             Bullet * skill = mList_Bullet_.at(i);
+//             if (skill != NULL)
+//                 {
+//                     if (skill->get_IsMove() == true)
+//                         {
+//                             skill->HandleMove();
+//                             skill->render(mRect.x + mRect.w,mRect.y+ mRect.h/2 , nullptr ,0 ,nullptr ,SDL_FLIP_NONE);
+//                         }
+//                     else
+//                         {
+//                             mList_Bullet_.erase(mList_Bullet_.begin());
+//                             if (skill != NULL)
+//                                 {
+//                                     delete skill;
+//                                     skill = NULL;
+//                                 }
+//                         }
+//                 }
+//         }
+// }
     
 void MainObject ::handleEvent(SDL_Event events)
 {
@@ -724,74 +725,70 @@ void MainObject ::Show(int x, int y )
                     frame = 0;
                 }   
         }
-    else if (status_ == ATTACK ) 
-        {
-            loadFromFile ("Image/Attack_1.png") ;
-            set_clip_3();
-            // set_Bullet();
-            SDL_Rect *currentClip = &frame_clip_3[frame / 6];
-            mRect.w = frame_clip_3[0].w;
-            mRect.h = frame_clip_3[0].h;
-            render(x, y, currentClip , degrees , nullptr ,flipType);
-            // Go to next frame
-            ++frame;
-
-            // Cycle animation
-             if (frame / 6 >= NUM_FRAMES_3)
-                {
-                    frame = 0;
-                }   
-        }
-    else if (status_ == ATTACK1 ) 
-        {
-            loadFromFile ("Image/Attack_2.png") ;
-            set_clip_2();
-            SDL_Rect *currentClip = &frame_clip_2[frame / 3];
-            mRect.w = frame_clip_2[0].w;
-            mRect.h = frame_clip_2[0].h;
-            render(x, y, currentClip , degrees , nullptr ,flipType);
-            // Go to next frame
-            ++frame;
-
-            // Cycle animation
-             if (frame / 3 >= NUM_FRAMES_2)
-                {
-                    frame = 0;
-                }     
-        }
-    else if (status_ == ATTACK2 ) 
-        {
-            loadFromFile ("Image/Attack_3.png") ;
-            set_clip_2();
-            SDL_Rect *currentClip = &frame_clip_2[frame / 3];
-            render(x, y, currentClip , degrees , nullptr ,flipType);
-            // Go to next frame
-            ++frame;
-
-            // Cycle animation
-             if (frame / 3 >= NUM_FRAMES_2)
-                {
-                    frame = 0;
-                } 
-            // handleBullet();  
-        }
-    else if (status_ == ATTACK3 ) 
-        {
-            loadFromFile ("Image/Attack_4.png") ;
-            set_clip_4();
-            SDL_Rect *currentClip = &frame_clip_4[frame / 10];
-            mRect.w = frame_clip_4[0].w;
-            mRect.h = frame_clip_4[0].h;
-            render(x, y, currentClip , degrees , nullptr ,flipType);
-            // Go to next frame
-            ++frame;
-
-            // Cycle animation
-             if (frame / 10 >= 10)
-                {
-                    frame = 0;
-                }   
-        }
+    // else if (status_ == ATTACK ) 
+    //     {
+    //         loadFromFile ("Image/Attack_1.png") ;
+    //         set_clip_3();
+    //         // set_Bullet();
+    //         SDL_Rect *currentClip = &frame_clip_3[frame / 6];
+    //         mRect.w = frame_clip_3[0].w;
+    //         mRect.h = frame_clip_3[0].h;
+    //         render(x, y, currentClip , degrees , nullptr ,flipType);
+    //         // Go to next frame
+    //         ++frame;
+    //         // Cycle animation
+    //          if (frame / 6 >= NUM_FRAMES_3)
+    //             {
+    //                 frame = 0;
+    //             }   
+    //     }
+    // else if (status_ == ATTACK1 ) 
+    //     {
+    //         loadFromFile ("Image/Attack_2.png") ;
+    //         set_clip_2();
+    //         SDL_Rect *currentClip = &frame_clip_2[frame / 3];
+    //         mRect.w = frame_clip_2[0].w;
+    //         mRect.h = frame_clip_2[0].h;
+    //         render(x, y, currentClip , degrees , nullptr ,flipType);
+    //         // Go to next frame
+    //         ++frame;
+    //         // Cycle animation
+    //          if (frame / 3 >= NUM_FRAMES_2)
+    //             {
+    //                 frame = 0;
+    //             }     
+    //     }
+    // else if (status_ == ATTACK2 ) 
+    //     {
+    //         loadFromFile ("Image/Attack_3.png") ;
+    //         set_clip_2();
+    //         SDL_Rect *currentClip = &frame_clip_2[frame / 3];
+    //         render(x, y, currentClip , degrees , nullptr ,flipType);
+    //         // Go to next frame
+    //         ++frame;
+    //         // Cycle animation
+    //          if (frame / 3 >= NUM_FRAMES_2)
+    //             {
+    //                 frame = 0;
+    //             } 
+    //         // handleBullet();  
+    //     }
+    // else if (status_ == ATTACK3 ) 
+    //     {
+    //         loadFromFile ("Image/Attack_4.png") ;
+    //         set_clip_4();
+    //         SDL_Rect *currentClip = &frame_clip_4[frame / 10];
+    //         mRect.w = frame_clip_4[0].w;
+    //         mRect.h = frame_clip_4[0].h;
+    //         render(x, y, currentClip , degrees , nullptr ,flipType);
+    //         // Go to next frame
+    //         ++frame;
+    //         // Cycle animation
+    //          if (frame / 10 >= 10)
+    //             {
+    //                 frame = 0;
+    //             }   
+    //     }
     // Render current frame
     // set_clip();
       
@@ -854,12 +851,23 @@ bool MainObject::checkMap(Map & map_data_)
                                 on_ground = false;
                             }
                     }
-                if (map_data_.tile[y1][x2] != BLANK_TILE || map_data_.tile[y2][x2] != BLANK_TILE  ) // oo ko duowc load hinh anh
+                int val_1 = map_data_.tile[y1][x2];
+                int val_2 = map_data_.tile[y2][x2];
+                if (val_1 == MONEY || val_2 == MONEY) // khi chạm vào tiền
                     {
-                        mRect.x = x2 * TILE_SIZE  ; // neeu va cham tru di 1luong la chieu nganh cua nhan vat
-                        mRect.x -=  mRect.w +1 ;
-                        x_val_ = 0;
+                        map_data_.tile[y1][x2]= 0;
+                        map_data_.tile[y2][x2]= 0;
+                        Increase_money();
                     }
+                else {
+                    if (map_data_.tile[y1][x2] != BLANK_TILE || map_data_.tile[y2][x2] != BLANK_TILE  ) // oo ko duowc load hinh anh
+                        {
+                            mRect.x = x2 * TILE_SIZE  ; // neeu va cham tru di 1luong la chieu nganh cua nhan vat
+                            mRect.x -=  mRect.w +1 ;
+                            x_val_ = 0;
+                        }
+                }
+                
             }
            
         if (x_val_ < 0)
@@ -871,12 +879,21 @@ bool MainObject::checkMap(Map & map_data_)
                                 on_ground = false;
                             }
                     }
-                if (map_data_.tile[y1][x1] != BLANK_TILE || map_data_.tile[y2][x1] != BLANK_TILE  )
+                int val_1 = map_data_.tile[y1][x1];
+                int val_2 = map_data_.tile[y2][x1];
+                if (val_1 == MONEY || val_2 == MONEY) // khi chạm vào tiền
                     {
-                        mRect.x = (x1+1)*TILE_SIZE;
-                        x_val_ = 0;
+                        map_data_.tile[y1][x1]= 0;
+                        map_data_.tile[y2][x1]= 0;
+                        Increase_money();
                     }
-                
+                else {
+                    if (map_data_.tile[y1][x1] != BLANK_TILE || map_data_.tile[y2][x1] != BLANK_TILE  )
+                        {
+                            mRect.x = (x1+1)*TILE_SIZE;
+                            x_val_ = 0;
+                        }
+                }
             }
     }
 
@@ -896,23 +913,45 @@ bool MainObject::checkMap(Map & map_data_)
     {
         if (y_val_ > 0 ) // ddang roi
                 {
-                    if (map_data_.tile[y2][x1] != BLANK_TILE || map_data_.tile[y2][x2] != BLANK_TILE) // 
+                    int val_1 = map_data_.tile[y2][x1];
+                    int val_2 = map_data_.tile[y2][x2];
+                    if (val_1 == MONEY || val_2 == MONEY)
                         {
-                            mRect.y = y2*TILE_SIZE ;
-                            mRect.y -= (mRect.h +1 );
-                            y_val_ = 0;
-                            on_ground = true;
+                            map_data_.tile[y2][x1]= 0;
+                            map_data_.tile[y2][x2]= 0;
+                            Increase_money();
                         }
+                    else 
+                    {
+                        if (map_data_.tile[y2][x1] != BLANK_TILE || map_data_.tile[y2][x2] != BLANK_TILE) // 
+                            {
+                                mRect.y = y2*TILE_SIZE ;
+                                mRect.y -= (mRect.h +1 );
+                                y_val_ = 0;
+                                on_ground = true;
+                            }
+                    }
                 }
             
             else if ( y_val_ < 0 )  // danh nhay
                 {
-                    if (map_data_.tile[y1][x1] != BLANK_TILE || map_data_.tile[y1][x2] != BLANK_TILE )
+                    int val_1 = map_data_.tile[y1][x1];
+                    int val_2 = map_data_.tile[y1][x2];
+                    if (val_1 == MONEY || val_2 == MONEY)
                         {
-                            mRect.y = (y1+1)*TILE_SIZE ; 
-                            y_val_ = 0;
-                            on_ground = false;
+                            map_data_.tile[y1][x1]= 0;
+                            map_data_.tile[y1][x2]= 0;
+                            Increase_money();
                         }
+                    else 
+                    {
+                        if (map_data_.tile[y1][x1] != BLANK_TILE || map_data_.tile[y1][x2] != BLANK_TILE )
+                            {
+                                mRect.y = (y1+1)*TILE_SIZE ; 
+                                y_val_ = 0;
+                                on_ground = false;
+                            }
+                    }
                 }
     }
     mRect.y += y_val_;
@@ -944,4 +983,8 @@ void MainObject ::Set_x_y(int x,int y)
 {
     mRect.x = x;
     mRect.y = y;
+}
+void MainObject ::Increase_money()
+{
+    money++;
 }
