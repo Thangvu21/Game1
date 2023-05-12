@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.cpp commonFunction.cpp BaseObject.cpp MainObject.cpp Gamemap.cpp Bullet.cpp
+OBJS = main.cpp commonFunction.cpp BaseObject.cpp MainObject.cpp Gamemap.cpp Time.cpp Button.cpp Explosion.cpp Knight.cpp
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = danhnhaubumchiu
 INCLUDE = -IC:\Users\phongvd8\Downloads\SDL2-devel-2.26.3-mingw\SDL2-2.26.3\x86_64-w64-mingw32\include\SDL2

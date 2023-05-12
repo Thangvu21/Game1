@@ -16,6 +16,11 @@ LButton gButtons[5];
 MainObject Chibi;      // nhân vật chính
 Knight Chibi_;
 
+Mix_Music * music_game;
+Mix_Music * Win;
+Mix_Music * Lose;
+Mix_Chunk * explosion;
+
 bool init()
 {
 	//Initialization flag
@@ -228,6 +233,13 @@ void close()
 	gRenderer = NULL;
 	TTF_CloseFont( gFont );
 	gFont = NULL;
+
+	Mix_FreeMusic(music_game);
+	music_game = NULL;
+	Mix_FreeMusic(Win); // we are the champiom
+	Win = NULL;
+	Mix_FreeMusic(Lose); // legend never die
+	Lose = NULL;
 	//Quit SDL subsystems
 	IMG_Quit();
 	SDL_Quit();

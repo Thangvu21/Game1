@@ -5,22 +5,21 @@
 #include "commonFunction.h"
 #include "BaseObject.h"
 #include "Gamemap.h"
-#include "Bullet.h"
 // Nhật vật chính
 class MainObject : public LTexture
 {
 public:
     enum Status_Main
     {
-        WALK, // đi bộ
-        RUN, // chạy
-        JUMP, // bật nhảy
-        STAND,  // dứng
-        FALL,  // rơi tự do 
-        ATTACK,
-        ATTACK1,
-        ATTACK2,
-        ATTACK3
+        WALK = 0, // đi bộ
+        RUN  = 1, // chạy
+        JUMP = 2, // bật nhảy
+        STAND = 3,  // dứng
+        FALL = 4,  // rơi tự do 
+        ATTACK = 5,
+        ATTACK1 = 6,
+        ATTACK2 = 7,
+        ATTACK3 = 8
     };
     enum Status_Main1
     {
@@ -46,13 +45,13 @@ public:
 
     void set_clip_Jump_Fall();
 
-    void set_clip_4(); // attack 4
+    void set_clip_4(); 
 
-    void set_Bullet(); // tao ra danj
+    // void set_Bullet(); // tao ra danj
 
-    void handleBullet();
+    // void handleBullet();
 
-    // void setCamera (SDL_Rect & camera); //Centers the camera over the dot
+    void Set_x_y(int x,int y); // set vị trí sau khi return hoặc start mới
 
     SDL_Rect getRect() const { return mRect; }
     
@@ -60,11 +59,11 @@ public:
 
     int GetHeight();
 
-    std:: vector<Bullet*> Get_list_Bullet () const {return mList_Bullet_;};
+    // std:: vector<Bullet*> Get_list_Bullet () const {return mList_Bullet_;};
 
     void handleMove(Map & map_data_);
     
-    void checkMap(Map & map_data);
+    bool checkMap(Map & map_data);
 
     void SetCamera_Entity_Map(Map & map_data );
 
@@ -73,7 +72,15 @@ public:
                 map_x_ = map_x;
                 map_y_ = map_y;
         }
-
+    void Set_status(int a)
+        {
+            status_ = Status_Main(a);
+        }
+    void Set_status1(int a)
+        {
+            status1_ = Status_Main1(a);
+        }
+    void Increase_money();
 private:
 
     int x_val_;
@@ -101,7 +108,7 @@ private:
 
     SDL_Rect mRect;
 
-    std:: vector<Bullet* > mList_Bullet_;
+    // std:: vector<Bullet* > mList_Bullet_;
 
     bool on_ground;
 
@@ -110,6 +117,8 @@ private:
     int map_x_ ; // check vi tri ban do theo nhan vat
 
     int map_y_ ;
+
+    int money;
 
     Input input_type ;
 

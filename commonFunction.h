@@ -8,8 +8,7 @@
 #include "SDL_mixer.h"
 #include <fstream>
 #include <iostream>
-
-
+#include <vector>
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 1280; // chiều dài cửa sổ
@@ -17,7 +16,7 @@ const int SCREEN_HEIGHT = 640;
      
 // const int LEVEL_WIDTH = 1200;
 // const int LEVEL_HEIGHT = 653; // chiều dài nền
-const int FRAME_PER_SECOND = 25 ; // fps
+const int FRAME_PER_SECOND = 50 ; // fps
 
 const int NUM_FRAMES = 5;
 
@@ -32,11 +31,19 @@ extern SDL_Window* gWindow;
 //The window renderer
 extern SDL_Renderer* gRenderer;
 
+extern TTF_Font* gFont ;
+
 static SDL_Event  g_event ; //Event handler
 
 extern double degrees ;
           
 extern SDL_RendererFlip flipType  ; // flip cho nhân vật
+
+extern SDL_RendererFlip flipType_EX;
+
+bool checkCollision (SDL_Rect a , SDL_Rect b);
+
+#define MONEY 4
 
 struct Input
 {

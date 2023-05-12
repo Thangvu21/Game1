@@ -3,35 +3,34 @@
 
 #include "commonFunction.h"
 
-class Time // quan ly time
+class LTimer
 {
-public:
-    Time();
-    ~Time();
+    public:
+		//Initializes variables
+		LTimer();
 
-    void start() ;
+		//The various clock actions
+		void start();
+		void stop();
+		void pause();
+		void unpause();
 
-    void stop () ;
+		//Gets the timer's time
+		Uint32 getTicks();
 
-    void paused() ;
-       
-    void unpaused() ;
-  
-    int get_ticks();
+		//Checks the status of the timer
+		bool isStarted();
+		bool isPaused();
+    private:
+		//The clock time when the timer started
+		Uint32 mStartTicks;
 
-    bool is_started_ ();
+		//The ticks stored when the timer was paused
+		Uint32 mPausedTicks;
 
-    bool is_paused_ () ;
-
-private:
-    //The clock time when the timer started
-    int start_time ; 
-    //The ticks stored when the timer was paused
-    int pause_time ;
-
-    //The timer status
-    bool is_paused ;
-    bool is_started ;
+		//The timer status
+		bool mPaused;
+		bool mStarted;
 };
 
 #endif
