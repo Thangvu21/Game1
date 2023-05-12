@@ -9,16 +9,20 @@
 #include "Explosion.h"
 #include "Knight.h"
 LTexture gBackgroundTexture; 
+LTexture START_GAME;
+LTexture WIN_GAME;
+LTexture LOSE_GAME;
 LButton gButtons[5];
 MainObject Chibi;      // nhân vật chính
 Knight Chibi_;
+
 bool init()
 {
 	//Initialization flag
 	bool success = true;
 
 	//Initialize SDL
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0 )
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
@@ -64,6 +68,11 @@ bool init()
 					printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
 					success = false;
 				}
+				if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+				{
+					printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+					success = false;
+				}
 			}
 		}
 	}
@@ -77,6 +86,21 @@ bool loadMedia()
 	bool success = true;
 
 	if( !gBackgroundTexture.loadFromFile( "Image/a.png" ) )
+	{
+		printf( "Failed to load background texture image!\n" );
+		success = false;
+	}
+	if( !START_GAME.loadFromFile( "menu/STart.png" ) )
+	{
+		printf( "Failed to load background texture image!\n" );
+		success = false;
+	}
+	if( !WIN_GAME.loadFromFile( "menu/Win.png" ) )
+	{
+		printf( "Failed to load background texture image!\n" );
+		success = false;
+	}
+	if( !LOSE_GAME.loadFromFile( "menu/LOse.png" ) )
 	{
 		printf( "Failed to load background texture image!\n" );
 		success = false;
@@ -190,6 +214,9 @@ void close_ (std::vector<Explosion*> List_Explosion)
 void close()  
 {
 	//Free loaded images
+	START_GAME.free();
+	WIN_GAME.free();
+	LOSE_GAME.free();
 	gBackgroundTexture.free();
 	Chibi.free();	
 	Chibi_.free();
@@ -225,7 +252,7 @@ int main( int argc, char* args[] )
 			while (true)
 			{
 				bool quit = false;
-				
+				bool win;
 				SDL_Color textColor = { 0, 0, 0, 255 };
 				int frame =0;
 				LTimer timer;
@@ -253,6 +280,7 @@ int main( int argc, char* args[] )
 						}
 					SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 					SDL_RenderClear( gRenderer );
+					// START_GAME.render(0,0, nullptr,0,nullptr,SDL_FLIP_NONE);
 					gButtons[0].render_();
 					gButtons[4].render_();
 					SDL_RenderPresent( gRenderer );
@@ -325,17 +353,20 @@ int main( int argc, char* args[] )
 						if (check_end == true)
 							{
 								quit = true;
+								win = false;
 							}
 					}
 				bool check_Win  = checkCollision(rect_player,rect_Knight);
 				if (check_Win == true)
 					{
 						quit = true;
+						win = true;
 					}
 
 				if ( Chibi.checkMap(map_data) == false)
 					{
 						quit = true;
+						win = false;
 					}
 				SDL_RenderPresent( gRenderer );
 				int real_time = timer.getTicks();
@@ -380,6 +411,14 @@ int main( int argc, char* args[] )
 					}
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
+				if (win == true)
+					{
+						WIN_GAME.render(0,0,nullptr,0,nullptr,SDL_FLIP_NONE);
+					}
+				else 
+					{
+						LOSE_GAME.render(0,0,nullptr,0,nullptr,SDL_FLIP_NONE);
+					}
 				gButtons[3].render_();
 				gButtons[4].render_();
 				SDL_RenderPresent( gRenderer );
