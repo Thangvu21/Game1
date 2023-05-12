@@ -153,6 +153,8 @@ bool loadMedia()
 		gButtons[3].setPosition(SCREEN_WIDTH/2,SCREEN_HEIGHT/2+150,79, 28);
 		gButtons[4].setPosition(SCREEN_WIDTH/2,SCREEN_HEIGHT/2+200,79, 28);
 	}
+	Win = Mix_LoadMUS("Sound/Win.wav");
+	Lose =  Mix_LoadMUS("Sound/Lose.wav");
 	return success;
 }
 
@@ -218,6 +220,10 @@ void close_ (std::vector<Explosion*> List_Explosion)
 	}
 void close()  
 {
+	Mix_FreeMusic(Win);
+	Mix_FreeMusic(Lose);
+	Win = NULL;
+	Lose = NULL;
 	//Free loaded images
 	START_GAME.free();
 	WIN_GAME.free();
@@ -426,10 +432,18 @@ int main( int argc, char* args[] )
 				if (win == true)
 					{
 						WIN_GAME.render(0,0,nullptr,0,nullptr,SDL_FLIP_NONE);
+						if (Mix_PlayingMusic() == 0)
+								{
+									Mix_PlayMusic(Win,-1);
+								}
 					}
 				else 
 					{
 						LOSE_GAME.render(0,0,nullptr,0,nullptr,SDL_FLIP_NONE);
+						if (Mix_PlayingMusic() == 0)
+								{
+									Mix_PlayMusic(Lose,-1);
+								}
 					}
 				gButtons[3].render_();
 				gButtons[4].render_();

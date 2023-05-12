@@ -1,5 +1,4 @@
 #include "MainObject.h"
-#include "Bullet.h"
 #include <vector>
                                                             
 #define GRAVITY_SPEED 1 // trọng lực r ơi
