@@ -1,4 +1,4 @@
-#include "commonFunction.h"
+ #include "commonFunction.h"
                           
 SDL_Window* gWindow = NULL;
 

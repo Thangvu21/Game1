@@ -24,7 +24,7 @@ MainObject ::MainObject()
     input_type.S_input = 0;
     input_type.V_input = 0;
     input_type.W_input = 0;
-    mRect.x = 100;
+    mRect.x = 100 ;
     mRect.y = 100;
     status_ = FALL;
     on_ground = false;
