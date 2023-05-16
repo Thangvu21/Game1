@@ -13,15 +13,8 @@
     S : để chạy nhanh hơn
 - Trong game bạn có thể di chuyển cao tùy việc ấn giữ W của bạn trong bao lâu
 - Nếu không cẩn thận bạn có thể bị rơi xuống hố hoặc bị va chạm vào những ngọn lửa đang di chuyển khi đó bạn đã thua
-- ![demo2](https://github.com/Thangvu21/Game1/assets/125382939/6cb32cfc-f8f5-4a5c-a771-7846b5ad1f64)
-
 - Bạn khi vượt qua các thử thách thì ở cuối map thì Chibi gặp bạn của mình và di chuyển lên chỗ người bạn của mình thì sẽ giành chiến thắng
-![demo](https://github.com/Thangvu21/Game1/assets/125382939/7390f164-a095-47ca-ae37-0c42abbfca9b)
-![demo1](https://github.com/Thangvu21/Game1/assets/125382939/77721528-f158-4255-9e09-4006a5423bc9)
-
 - À mình cũng có để 1 số quả dâu trên map cho hình ảnh game thêm sinh động và nhân vật cũng có thể ăn được
-- ![demo3](https://github.com/Thangvu21/Game1/assets/125382939/fecacdaa-c046-4cfe-88d0-6dbf973dee59)
-
 ## Các kĩ thuật mà mình đã sử dụng
 - Mảng
 - Con trỏ/ Giải phóng bộ nhớ
