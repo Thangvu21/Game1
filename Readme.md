@@ -14,7 +14,12 @@
 - Trong game bạn có thể di chuyển cao tùy việc ấn giữ W của bạn trong bao lâu
 - Nếu không cẩn thận bạn có thể bị rơi xuống hố hoặc bị va chạm vào những ngọn lửa đang di chuyển khi đó bạn đã thua
 - Bạn khi vượt qua các thử thách thì ở cuối map thì Chibi gặp bạn của mình và di chuyển lên chỗ người bạn của mình thì sẽ giành chiến thắng
-- À mình cũng có để 1 số quả dâu trên map cho hình ảnh game thêm sinh động và nhân vật cũng có thể ăn được
+- À mình cũng có để 1 số quả dâu trên map cho hình ảnh game thêm sinh động và nhân vật cũng có thể ăn được![ảnh 1](https://github.com/Thangvu21/Game1/assets/125382939/87fa9697-d93f-4b19-b972-f1e8781dce71)
+![ảnh 2](https://github.com/Thangvu21/Game1/assets/125382939/4fc160c6-c54b-48d6-9e0f-2d07f2c5bf8a)
+![ảnh 3](https://github.com/Thangvu21/Game1/assets/125382939/0f59d5a8-b151-4cac-acc4-2f1961b7c1d2)
+![ảnh 4](https://github.com/Thangvu21/Game1/assets/125382939/46e4208d-5a6f-4651-84b4-cb842eb9d760)
+![ảnh 5](https://github.com/Thangvu21/Game1/assets/125382939/9ac197e8-a9b2-426f-9da9-b351c14bd3df)
+
 ## Các kĩ thuật mà mình đã sử dụng
 - Mảng
 - Con trỏ/ Giải phóng bộ nhớ
